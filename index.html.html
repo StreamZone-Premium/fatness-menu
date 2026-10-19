@@ -1,0 +1,2700 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FATNESS bar and food | Menú Digital, Reservas & Pedidos - La Grita</title>
+  <meta name="description" content="Pide en línea tus Hamburguesas, Perros Calientes, Papas y Cócteles o reserva tu mesa en FATNESS bar and food, La Grita, Táchira." />
+  <meta name="theme-color" content="#0C0D10" />
+
+  <!-- Google Fonts: Plus Jakarta Sans + Bebas Neue + Caveat (Estilo Pizarra Gastro-Bar) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Bebas Neue"', 'sans-serif'],
+            hand: ['"Caveat"', 'cursive'],
+          },
+          colors: {
+            chalk: '#0C0D10',
+            slateCard: '#151821',
+            mustard: '#FACC15',
+            mustardDark: '#EAB308',
+            flame: '#F97316',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0C0D10;
+      color: #F8FAFC;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .bg-chalkboard {
+      background:
+        radial-gradient(circle at 15% 15%, rgba(250, 204, 21, 0.10), transparent 35%),
+        radial-gradient(circle at 85% 10%, rgba(249, 115, 22, 0.08), transparent 35%),
+        #0C0D10;
+    }
+
+    .glass-nav {
+      background: rgba(12, 13, 16, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .food-card {
+      background: linear-gradient(180deg, rgba(24, 27, 36, 0.95) 0%, rgba(16, 18, 24, 0.98) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .food-card:hover {
+      border-color: rgba(250, 204, 21, 0.45);
+      transform: translateY(-3px);
+      box-shadow: 0 18px 38px -15px rgba(0, 0, 0, 0.8), 0 0 25px -8px rgba(250, 204, 21, 0.18);
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .custom-option input:checked + div {
+      background-color: rgba(250, 204, 21, 0.15);
+      border-color: #FACC15;
+      color: #FFFFFF;
+    }
+    .custom-option input:checked + div .check-dot {
+      background-color: #FACC15;
+      border-color: #FACC15;
+      color: #0C0D10;
+    }
+  </style>
+</head>
+<body class="bg-chalkboard min-h-screen flex flex-col selection:bg-mustard selection:text-chalk pb-24">
+
+  <!-- TOAST DE COPIADO / NOTIFICACIÓN -->
+  <div id="toastBox" class="fixed top-5 left-1/2 -translate-x-1/2 z-[95] pointer-events-none opacity-0 -translate-y-3 transition-all duration-300">
+    <div class="px-4 py-2.5 rounded-xl bg-mustard text-chalk font-extrabold text-xs shadow-2xl flex items-center gap-2">
+      <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+      <span id="toastText">¡Copiado al portapapeles!</span>
+    </div>
+  </div>
+
+  <!-- BARRA SUPERIOR DE ESTADO DEL LOCAL (SIN BOTÓN DE DUEÑA VISIBLE) -->
+  <div class="bg-mustard/10 border-b border-mustard/20 text-xs py-2 px-4">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span id="storeStatusBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span>
+          Pedidos y Reservas en Línea Activos
+        </span>
+        <span class="text-slate-300 hidden sm:inline">📍 C. 3, La Grita 5022, Táchira • Horario: 6:00 p.m. a 11:00 p.m.</span>
+      </div>
+      <div class="flex items-center gap-3 ml-auto">
+        <span class="text-[11px] text-mustard font-semibold">⚡ Atención Directa a Cocina y Mesas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER PRINCIPAL -->
+  <header class="sticky top-0 z-40 glass-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+      <!-- Logo FATNESS bar and food (3 toques discretos también permiten meter el PIN 1234) -->
+      <div onclick="handleSecretLogoTap()" class="flex items-center gap-3 group cursor-pointer select-none">
+        <div class="w-11 h-11 rounded-2xl bg-mustard text-chalk flex flex-col items-center justify-center font-display text-xl tracking-wider leading-none shadow-lg shadow-mustard/20 group-hover:scale-105 transition">
+          <span>FAT</span>
+          <span class="text-[9px] font-sans font-extrabold -mt-1">BAR&FOOD</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-display text-2xl sm:text-3xl tracking-wider text-white leading-none">FATNESS</span>
+            <span class="font-hand text-lg sm:text-xl text-mustard -ml-1">bar and food</span>
+          </div>
+          <div class="flex items-center gap-2 text-[11px] text-slate-400">
+            <span>Gastro-Bar • La Grita, Táchira</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selector Rápido de Modalidad de Entrega en Header -->
+      <div class="hidden lg:flex items-center bg-slateCard p-1 rounded-xl border border-white/10 text-xs font-bold">
+        <button onclick="setOrderMode('delivery')" id="modeBtn-delivery" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+          <span>🛵 A Domicilio</span>
+        </button>
+        <button onclick="setOrderMode('pickup')" id="modeBtn-pickup" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+          <span>🚗 Retiro / Auto</span>
+        </button>
+        <button onclick="setOrderMode('dinein')" id="modeBtn-dinein" class="px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+          <span>🍽️ En el Local</span>
+        </button>
+      </div>
+
+      <!-- Botones Derecha -->
+      <div class="flex items-center gap-2">
+        <a href="#reservar-mesa"
+           class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-mustard transition">
+          <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+          <span>Reservar Mesa</span>
+        </a>
+
+        <a href="https://instagram.com/fatness_ve" target="_blank" rel="noopener noreferrer"
+           class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-200 transition">
+          <i data-lucide="instagram" class="w-4 h-4 text-pink-400"></i>
+          <span>@fatness_ve</span>
+        </a>
+
+        <button onclick="toggleCartDrawer(true)" class="relative inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-mustard hover:bg-mustardDark text-chalk font-extrabold text-xs sm:text-sm shadow-lg shadow-mustard/20 transition">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          <span>Mi Pedido</span>
+          <span id="headerCartBadge" class="px-2 py-0.5 text-xs rounded-full bg-chalk text-mustard font-extrabold">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO / PORTADA -->
+  <section class="relative pt-8 pb-10 px-4 sm:px-6 lg:px-8 border-b border-white/5 overflow-hidden">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <!-- Columna Izquierda: Información del Restaurante -->
+      <div class="lg:col-span-7 space-y-5">
+        <div class="inline-flex flex-wrap items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300">
+          <span class="font-bold text-mustard">🍔 GASTRO-BAR EN LA GRITA</span>
+          <span>•</span>
+          <span>Consumo en el lugar • Pedidos desde el auto • Delivery</span>
+        </div>
+
+        <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl tracking-wide text-white leading-[0.95]">
+          “NO HAY MAL QUE POR BIEN NO VENGA, <span class="text-mustard">NI PERRO CALIENTE QUE NO TE CONVENGA”</span>
+        </h1>
+
+        <p class="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
+          Personaliza tu <strong class="text-white">Hamburguesa, Perro Caliente o Cóctel</strong> exactamente como te gusta en menos de 1 minuto, o <strong class="text-mustard">reserva tu mesa</strong> para venir con tu grupo sin esperar.
+        </p>
+
+        <!-- Selector de Modalidad Visible en Móvil y Desktop -->
+        <div class="pt-1">
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">1. ¿Cómo deseas tu pedido hoy?</p>
+          <div class="grid grid-cols-3 gap-2.5 max-w-lg">
+            <button onclick="setOrderMode('delivery')" id="heroMode-delivery" class="p-3 rounded-xl border text-left transition">
+              <span class="text-lg block">🛵</span>
+              <span class="text-xs font-extrabold block mt-1">A Domicilio</span>
+              <span class="text-[10px] text-slate-400 block">Delivery La Grita</span>
+            </button>
+            <button onclick="setOrderMode('pickup')" id="heroMode-pickup" class="p-3 rounded-xl border text-left transition">
+              <span class="text-lg block">🚗</span>
+              <span class="text-xs font-extrabold block mt-1">Para Llevar / Auto</span>
+              <span class="text-[10px] text-slate-400 block">Pasa buscando</span>
+            </button>
+            <button onclick="setOrderMode('dinein')" id="heroMode-dinein" class="p-3 rounded-xl border text-left transition">
+              <span class="text-lg block">🍽️</span>
+              <span class="text-xs font-extrabold block mt-1">En el Local</span>
+              <span class="text-[10px] text-slate-400 block">Adelanta tu mesa</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Botones Principales -->
+        <div class="flex flex-wrap items-center gap-3 pt-2">
+          <a href="#menu-interactivo" class="px-6 py-3.5 rounded-xl bg-mustard hover:bg-mustardDark text-chalk font-extrabold text-sm inline-flex items-center gap-2 shadow-xl shadow-mustard/20 transition">
+            <span>Armar mi Pedido Ahora</span>
+            <i data-lucide="flame" class="w-4 h-4"></i>
+          </a>
+          <a href="#reservar-mesa" class="px-5 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-mustard/30 text-mustard font-bold text-sm inline-flex items-center gap-2 transition">
+            <i data-lucide="calendar-check" class="w-4 h-4"></i>
+            <span>Reservar una Mesa</span>
+          </a>
+          <a href="#metodos-pago" class="px-5 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-sm inline-flex items-center gap-2 transition">
+            <i data-lucide="wallet" class="w-4 h-4 text-mustard"></i>
+            <span>Métodos de Pago</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Galería -->
+      <div class="lg:col-span-5">
+        <div class="relative rounded-3xl overflow-hidden border border-white/10 bg-slateCard shadow-2xl">
+          <div class="grid grid-cols-2 gap-2 p-2">
+            <div class="relative rounded-2xl overflow-hidden h-48 sm:h-56 group">
+              <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80" alt="Cheese Burger Fatness" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
+                <div>
+                  <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-mustard text-chalk">Papas Incluidas</span>
+                  <p class="text-sm font-extrabold text-white mt-1">Fat & Cheese Burgers</p>
+                </div>
+              </div>
+            </div>
+            <div class="relative rounded-2xl overflow-hidden h-48 sm:h-56 group">
+              <img src="https://images.unsplash.com/photo-1619740455993-9e612b1af08a?auto=format&fit=crop&w=800&q=80" alt="Perros Calientes Especiales" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
+                <div>
+                  <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-flame text-white">Especialidades</span>
+                  <p class="text-sm font-extrabold text-white mt-1">Perros con Salchicha Polaca y Alemán</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-span-2 relative rounded-2xl overflow-hidden h-36 group">
+              <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=1000&q=80" alt="Cócteles y Bebidas Fatness" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent flex items-center p-4">
+                <div>
+                  <p class="font-hand text-xl text-mustard">“Al mal tiempo, buena comida”</p>
+                  <p class="text-base font-extrabold text-white">Cócteles de Autor, Shots, Sangría y Cervezas</p>
+                  <p class="text-xs text-slate-300">Mojito Kiwi • Blue Margarita • Polvo de Medianoche</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       MENÚ DIGITAL INTERACTIVO
+  ========================================================== -->
+  <main id="menu-interactivo" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
+
+    <!-- Barra Pegajosa de Categorías + Buscador -->
+    <div class="sticky top-[68px] z-30 bg-chalk/95 backdrop-blur-md py-3 border-b border-white/10 mb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <!-- Pestañas de Categorías -->
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 md:pb-0">
+          <button onclick="filterCategory('all')" id="catBtn-all" class="cat-pill whitespace-nowrap px-4 py-2 rounded-xl text-xs font-extrabold transition">
+            🔥 Todo el Menú
+          </button>
+          <button onclick="filterCategory('hamburguesas')" id="catBtn-hamburguesas" class="cat-pill whitespace-nowrap px-4 py-2 rounded-xl text-xs font-extrabold transition">
+            🍔 Hamburguesas (Con Papas)
+          </button>
+          <button onclick="filterCategory('perros')" id="catBtn-perros" class="cat-pill whitespace-nowrap px-4 py-2 rounded-xl text-xs font-extrabold transition">
+            🌭 Perros Calientes
+          </button>
+          <button onclick="filterCategory('papas')" id="catBtn-papas" class="cat-pill whitespace-nowrap px-4 py-2 rounded-xl text-xs font-extrabold transition">
+            🍟 Papas a la Francesa
+          </button>
+          <button onclick="filterCategory('cocteles')" id="catBtn-cocteles" class="cat-pill whitespace-nowrap px-4 py-2 rounded-xl text-xs font-extrabold transition">
+            🍹 Cócteles
+          </button>
+          <button onclick="filterCategory('shots')" id="catBtn-shots" class="cat-pill whitespace-nowrap px-4 py-2 rounded-xl text-xs font-extrabold transition">
+            🥃 Shots & Otras Bebidas
+          </button>
+        </div>
+
+        <!-- Buscador en vivo (Si escribes 1234 aquí también se abre el panel oculto) -->
+        <div class="relative w-full md:w-64">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+          <input id="menuSearchInput" type="text" oninput="handleSearchOrPin(this)" placeholder="Buscar Fat Burger, Polaca, Mojito..."
+                 class="w-full pl-9 pr-4 py-2 rounded-xl bg-slateCard border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-mustard" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Aviso de Personalización -->
+    <div class="mb-6 p-3.5 rounded-2xl bg-mustard/10 border border-mustard/25 flex flex-wrap items-center justify-between gap-2 text-xs">
+      <div class="flex items-center gap-2.5">
+        <span class="px-2 py-0.5 rounded bg-mustard text-chalk font-extrabold uppercase text-[10px]">Personalizable</span>
+        <span class="text-slate-200">Toca cualquier <strong>Hamburguesa o Perro Caliente</strong> para elegir si lo quieres <em>Con Todo, Sin Queso, Sin Cebolla, Sin Salsa</em> o agregar extras.</span>
+      </div>
+    </div>
+
+    <!-- Contenedor Dinámico del Menú -->
+    <div id="menuSectionsContainer" class="space-y-10">
+      <!-- Renderizado por JS -->
+    </div>
+  </main>
+
+  <!-- =========================================================
+       SECCIÓN DE RESERVA DE MESAS CON DISPONIBILIDAD DE HORA
+  ========================================================== -->
+  <section id="reservar-mesa" class="border-t border-white/5 bg-gradient-to-b from-slateCard/40 to-chalk py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <span class="text-xs font-bold uppercase tracking-widest text-mustard">¿Vienes al Local en Grupo o Pareja?</span>
+        <h2 class="font-display text-3xl sm:text-4xl text-white tracking-wide mt-1">RESERVA TU MESA EN LÍNEA</h2>
+        <p class="text-xs sm:text-sm text-slate-400 mt-1">
+          Selecciona la hora, verifica si está disponible e ingresa tus datos. Si llega la hora de tu reserva y aún no has llegado, nos comunicaremos contigo para confirmar tu asistencia.
+        </p>
+      </div>
+
+      <div class="rounded-3xl food-card p-6 sm:p-8 border border-mustard/25 shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Selección de Fecha, Hora y Disponibilidad -->
+        <div class="lg:col-span-7 space-y-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="text-xs font-extrabold uppercase tracking-wider text-mustard block mb-1.5">1. Fecha de la Reserva *</label>
+              <input id="resDate" type="date" onchange="renderReservationTimeSlots()"
+                     class="w-full px-3.5 py-2.5 rounded-xl bg-chalk border border-white/15 text-xs font-bold text-white focus:outline-none focus:border-mustard" />
+            </div>
+            <div>
+              <label class="text-xs font-extrabold uppercase tracking-wider text-mustard block mb-1.5">2. Cantidad de Personas *</label>
+              <select id="resGuests" class="w-full px-3.5 py-2.5 rounded-xl bg-chalk border border-white/15 text-xs font-bold text-white focus:outline-none focus:border-mustard">
+                <option value="2 personas">👥 2 personas (Pareja)</option>
+                <option value="3 personas">👥 3 personas</option>
+                <option value="4 personas" selected>👨‍👩‍👧‍👦 4 personas</option>
+                <option value="5 personas">👥 5 personas</option>
+                <option value="6 personas">👥 6 personas</option>
+                <option value="7 a 8 personas">🎉 7 a 8 personas</option>
+                <option value="9 a 12 personas (Grupo)">🥳 9 a 12 personas (Grupo)</option>
+                <option value="1 persona">👤 1 persona</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-extrabold uppercase tracking-wider text-mustard">3. Selecciona la Hora (6:00 p.m. - 10:30 p.m.) *</label>
+              <span id="resAvailabilityBadge" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                ✓ Hora Disponible
+              </span>
+            </div>
+            <div id="resTimeSlotsGrid" class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              <!-- Renderizado por JS -->
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-chalk/90 border border-white/10 text-xs text-slate-300 flex items-start gap-2.5">
+            <i data-lucide="phone-incoming" class="w-4 h-4 text-mustard shrink-0 mt-0.5"></i>
+            <p>
+              <strong class="text-white">Importante:</strong> Guardamos tu mesa a la hora seleccionada. En caso de que sea la hora indicada y aún no hayan llegado, nuestro equipo se comunicará a tu número de teléfono para confirmar si mantienen la reserva.
+            </p>
+          </div>
+        </div>
+
+        <!-- Datos del Cliente para la Reserva -->
+        <div class="lg:col-span-5 p-5 rounded-2xl bg-chalk border border-white/10 space-y-4">
+          <h3 class="font-extrabold text-white text-sm flex items-center gap-2 border-b border-white/10 pb-2.5">
+            <i data-lucide="user-check" class="w-4 h-4 text-mustard"></i>
+            <span>4. Datos para Confirmar Reserva</span>
+          </h3>
+
+          <div>
+            <label class="text-[11px] text-slate-400 font-semibold block mb-1">Nombre y Apellido *</label>
+            <input id="resClientName" type="text" placeholder="Ej. María Fernanda Pérez"
+                   class="w-full px-3.5 py-2.5 rounded-xl bg-slateCard border border-white/10 text-xs text-white focus:outline-none focus:border-mustard" />
+          </div>
+
+          <div>
+            <label class="text-[11px] text-slate-400 font-semibold block mb-1">Número de Teléfono / WhatsApp *</label>
+            <input id="resClientPhone" type="tel" placeholder="Ej. 0424-0000000"
+                   class="w-full px-3.5 py-2.5 rounded-xl bg-slateCard border border-white/10 text-xs text-white focus:outline-none focus:border-mustard" />
+          </div>
+
+          <div>
+            <label class="text-[11px] text-slate-400 font-semibold block mb-1">Nota opcional (Cumpleaños, preferencia, etc.)</label>
+            <input id="resClientNotes" type="text" placeholder="Ej. Celebración de cumpleaños / Mesa cerca de barra"
+                   class="w-full px-3.5 py-2 rounded-xl bg-slateCard border border-white/10 text-xs text-white focus:outline-none focus:border-mustard" />
+          </div>
+
+          <button type="button" onclick="submitTableReservation()"
+                  class="w-full py-3.5 px-4 rounded-xl bg-mustard hover:bg-mustardDark text-chalk font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-mustard/20 transition">
+            <i data-lucide="calendar-check-2" class="w-4 h-4"></i>
+            <span>Confirmar Reserva por WhatsApp</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       SECCIÓN DE MÉTODOS DE PAGO (CON COPIADO EN 1 CLIC)
+  ========================================================== -->
+  <section id="metodos-pago" class="border-t border-white/5 bg-slateCard/60 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <span class="text-xs font-bold uppercase tracking-widest text-mustard">Cero Demoras en tu Atención</span>
+        <h2 class="font-display text-3xl sm:text-4xl text-white tracking-wide mt-1">MÉTODOS DE PAGO RÁPIDO</h2>
+        <p class="text-xs sm:text-sm text-slate-400 mt-1">
+          Haz clic en cualquier método de pago para copiar los datos. Al enviar tu pedido, adjuntas tu referencia y tu orden pasa directo a cocina.
+        </p>
+      </div>
+
+      <div id="paymentCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Renderizado por JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN UBICACIÓN, HORARIOS Y CONTACTO REAL (+584247139330) -->
+  <section class="border-t border-white/5 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="p-6 rounded-2xl food-card">
+        <div class="w-10 h-10 rounded-xl bg-mustard/15 text-mustard flex items-center justify-center mb-3">
+          <i data-lucide="map-pin" class="w-5 h-5"></i>
+        </div>
+        <h3 class="font-bold text-white text-base">Ubicación en La Grita</h3>
+        <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+          C. 3, La Grita 5022, Estado Táchira, Venezuela.<br>
+          Código Plus Maps: <strong class="text-slate-200">42M9+4F La Grita</strong>
+        </p>
+        <a href="https://www.google.com/maps/search/?api=1&query=FATNESS+La+Grita+Tachira" target="_blank" rel="noopener noreferrer"
+           class="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-mustard hover:underline">
+          <span>Abrir ubicación en Google Maps</span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+
+      <div class="p-6 rounded-2xl food-card">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-3">
+          <i data-lucide="clock" class="w-5 h-5"></i>
+        </div>
+        <h3 class="font-bold text-white text-base">Horario de Atención</h3>
+        <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+          Abierto en horario nocturno:<br>
+          <strong class="text-white">6:00 p.m. a 11:00 p.m.</strong><br>
+          Consumo en el lugar, reservas, retiro en auto y delivery.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl food-card">
+        <div class="w-10 h-10 rounded-xl bg-pink-500/15 text-pink-400 flex items-center justify-center mb-3">
+          <i data-lucide="phone-call" class="w-5 h-5"></i>
+        </div>
+        <h3 class="font-bold text-white text-base">Contacto Directo</h3>
+        <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+          WhatsApp de Pedidos y Reservas: <strong class="text-white">+58 424-7139330</strong><br>
+          Instagram Oficial: <strong class="text-white">@fatness_ve</strong>
+        </p>
+        <a href="https://wa.me/584247139330" target="_blank" rel="noopener noreferrer"
+           class="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:underline">
+          <span>Escribir al WhatsApp (+58 424-7139330)</span>
+          <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BARRA FIJA INFERIOR: VER MI PEDIDO -->
+  <div id="stickyOrderBar" class="fixed bottom-0 inset-x-0 z-40 p-3 bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none hidden">
+    <div class="max-w-3xl mx-auto pointer-events-auto">
+      <button onclick="toggleCartDrawer(true)" class="w-full py-3.5 px-5 rounded-2xl bg-mustard hover:bg-mustardDark text-chalk font-extrabold text-sm shadow-2xl shadow-mustard/30 flex items-center justify-between transition">
+        <div class="flex items-center gap-2.5">
+          <span id="stickyBarCount" class="px-2.5 py-0.5 rounded-lg bg-chalk text-mustard text-xs font-extrabold">1 producto</span>
+          <span id="stickyBarMode" class="text-xs font-bold opacity-85 hidden sm:inline">• 🛵 Delivery</span>
+        </div>
+        <span class="text-sm sm:text-base font-extrabold tracking-tight">Ver mi pedido y Factura →</span>
+        <span id="stickyBarTotal" class="text-sm sm:text-base font-extrabold">$0.00</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL 1: PERSONALIZADOR DE PLATOS
+  ========================================================== -->
+  <div id="customizerModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="w-full max-w-xl rounded-3xl bg-slateCard border border-white/15 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div class="p-5 border-b border-white/10 flex items-start justify-between gap-3 bg-chalk/60">
+        <div>
+          <span id="custCategoryBadge" class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-mustard/20 text-mustard">Hamburguesa</span>
+          <h3 id="custTitle" class="text-xl font-extrabold text-white mt-1">Cheese Burger</h3>
+          <p id="custDesc" class="text-xs text-slate-400 mt-1 leading-relaxed"></p>
+        </div>
+        <button onclick="closeCustomizerModal()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div id="custOptionsBody" class="p-5 overflow-y-auto space-y-6 flex-1"></div>
+
+      <div class="p-4 sm:p-5 border-t border-white/10 bg-chalk flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2 bg-slateCard px-3 py-2 rounded-xl border border-white/10">
+          <button type="button" onclick="changeCustQty(-1)" class="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-white font-bold">-</button>
+          <span id="custQtyValue" class="w-6 text-center font-extrabold text-sm text-white">1</span>
+          <button type="button" onclick="changeCustQty(1)" class="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-white font-bold">+</button>
+        </div>
+
+        <button type="button" onclick="confirmAddCustomizedItem()" class="flex-1 py-3.5 px-5 rounded-xl bg-mustard hover:bg-mustardDark text-chalk font-extrabold text-sm flex items-center justify-between shadow-lg shadow-mustard/20 transition">
+          <span>Agregar al pedido</span>
+          <span id="custFinalPriceBtn">$0.00</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       DRAWER LATERAL: CARRITO + FACTURA RÁPIDA PARA WHATSAPP
+  ========================================================== -->
+  <div id="cartBackdrop" onclick="toggleCartDrawer(false)" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity"></div>
+
+  <aside id="cartDrawer" class="fixed top-0 right-0 h-full w-full max-w-lg bg-slateCard border-l border-white/10 z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-chalk/60">
+      <div>
+        <h3 class="font-extrabold text-base sm:text-lg text-white flex items-center gap-2">
+          <i data-lucide="receipt" class="w-5 h-5 text-mustard"></i>
+          <span>Orden & Factura Rápida</span>
+        </h3>
+        <p class="text-[11px] text-slate-400">Completa tus datos para enviar la comanda lista a cocina</p>
+      </div>
+      <button onclick="toggleCartDrawer(false)" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5">
+      <!-- 1. Lista de platos personalizados -->
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-extrabold uppercase tracking-wider text-mustard">1. Tus Platos Seleccionados</span>
+          <button onclick="clearCart()" class="text-[11px] text-rose-400 hover:underline">Vaciar pedido</button>
+        </div>
+        <div id="cartItemsList" class="space-y-2.5"></div>
+      </div>
+
+      <!-- 2. Tipo de Entrega y Datos del Cliente -->
+      <div class="p-4 rounded-2xl bg-chalk/80 border border-white/10 space-y-3">
+        <span class="text-xs font-extrabold uppercase tracking-wider text-mustard block">2. Modalidad y Datos de Entrega</span>
+        
+        <div class="grid grid-cols-3 gap-1.5 bg-slateCard p-1 rounded-xl border border-white/10 text-xs font-bold">
+          <button type="button" onclick="setOrderMode('delivery')" id="cartMode-delivery" class="py-2 rounded-lg transition">🛵 Delivery</button>
+          <button type="button" onclick="setOrderMode('pickup')" id="cartMode-pickup" class="py-2 rounded-lg transition">🚗 Retiro/Auto</button>
+          <button type="button" onclick="setOrderMode('dinein')" id="cartMode-dinein" class="py-2 rounded-lg transition">🍽️ En Local</button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+          <div>
+            <label class="text-[11px] text-slate-400 font-semibold block mb-1">Tu Nombre y Apellido *</label>
+            <input id="clientName" type="text" placeholder="Ej. Andrés Mora" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/10 text-xs text-white focus:outline-none focus:border-mustard" />
+          </div>
+          <div>
+            <label class="text-[11px] text-slate-400 font-semibold block mb-1">Teléfono de Contacto *</label>
+            <input id="clientPhone" type="tel" placeholder="Ej. 0424-0000000" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/10 text-xs text-white focus:outline-none focus:border-mustard" />
+          </div>
+        </div>
+
+        <div id="dynamicDeliveryFields">
+          <label id="addressLabel" class="text-[11px] text-slate-400 font-semibold block mb-1">Dirección exacta en La Grita y punto de referencia *</label>
+          <input id="clientAddress" type="text" placeholder="Ej. Calle 4 cerca de la plaza, casa portón negro"
+                 class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/10 text-xs text-white focus:outline-none focus:border-mustard" />
+        </div>
+      </div>
+
+      <!-- 3. Método de Pago y Comprobante -->
+      <div class="p-4 rounded-2xl bg-chalk/80 border border-white/10 space-y-3">
+        <span class="text-xs font-extrabold uppercase tracking-wider text-mustard block">3. Pago y Comprobante (Agiliza tu pedido)</span>
+
+        <div>
+          <label class="text-[11px] text-slate-400 font-semibold block mb-1">Selecciona cómo vas a cancelar:</label>
+          <select id="cartPaymentSelect" onchange="renderCartPaymentDetails()"
+                  class="w-full px-3 py-2.5 rounded-xl bg-slateCard border border-mustard/40 text-xs font-bold text-white focus:outline-none focus:border-mustard">
+            <option value="pagomovil">📱 Pago Móvil (Bs)</option>
+            <option value="bancolombia">🏦 Transferencia Bancolombia / Nequi (COP)</option>
+            <option value="efectivo">💵 Efectivo (Dólares USD o Pesos COP)</option>
+            <option value="binance">🪙 Binance Pay / Zinli (USD)</option>
+          </select>
+        </div>
+
+        <div id="cartPaymentBox" class="p-3 rounded-xl bg-slateCard border border-white/10 space-y-1.5"></div>
+
+        <div>
+          <label id="paymentRefLabel" class="text-[11px] text-emerald-400 font-bold block mb-1">
+            N° de Referencia del Pago (o indica con qué billete pagas):
+          </label>
+          <input id="clientPaymentRef" type="text" placeholder="Ej. Ref: 849201 (Ya pagado) / o Billete de $20"
+                 class="w-full px-3 py-2 rounded-xl bg-slateCard border border-emerald-500/30 text-xs text-white focus:outline-none focus:border-emerald-400" />
+        </div>
+      </div>
+    </div>
+
+    <div class="p-4 sm:p-5 border-t border-white/10 bg-chalk space-y-3">
+      <div class="space-y-1 text-xs">
+        <div class="flex justify-between text-slate-400">
+          <span>Subtotal de comida y bebida:</span>
+          <span id="summarySubtotal">$0.00</span>
+        </div>
+        <div id="summaryDeliveryRow" class="flex justify-between text-slate-400">
+          <span>Cargo estimado de Delivery:</span>
+          <span id="summaryDelivery">$1.50</span>
+        </div>
+        <div class="flex justify-between text-base font-extrabold text-white pt-1 border-t border-white/10">
+          <span>TOTAL FACTURA:</span>
+          <div class="text-right">
+            <span id="summaryTotalUSD" class="text-mustard text-lg">$0.00</span>
+            <span id="summaryTotalVES" class="block text-[11px] text-emerald-400 font-semibold">Bs. 0,00</span>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="generateInvoiceAndSend()" class="w-full py-3.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-chalk font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 transition">
+        <i data-lucide="file-check-2" class="w-4 h-4"></i>
+        <span>Generar Factura Digital y Enviar a WhatsApp</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- =========================================================
+       MODAL 2: FACTURA / COMANDA DIGITAL GENERADA (#FAT-XXXX)
+  ========================================================== -->
+  <div id="invoicePreviewModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[60] hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="w-full max-w-md rounded-3xl bg-white text-slate-900 p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-900 text-mustard">Comanda Lista para Cocina</span>
+          <h3 class="text-xl font-black text-slate-900 mt-1">FATNESS bar and food</h3>
+          <p class="text-xs text-slate-500">C. 3, La Grita • Tel: +58 424-7139330</p>
+        </div>
+        <div class="text-right">
+          <span class="text-[11px] text-slate-500 block">Factura / Orden</span>
+          <span id="invNumber" class="text-base font-black text-slate-900">#FAT-1042</span>
+        </div>
+      </div>
+
+      <div id="invoiceBodyContent" class="text-xs space-y-3 font-medium text-slate-700"></div>
+
+      <div class="pt-3 border-t border-dashed border-slate-300 flex flex-col gap-2">
+        <button onclick="sendPreparedWhatsAppMessage()" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>Enviar ahora al WhatsApp (+58 424-7139330)</span>
+        </button>
+        <button onclick="closeInvoiceModal()" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+          Cerrar vista previa
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL 3: PANEL DEL DUEÑO INVISIBLE (SE ABRE CON CÓDIGO 1234)
+       Incluye:
+       1. Control de Pedidos, Ingresos del Día y Buscador por Nombre
+       2. Gestión de Menú (Editar Precios, Agregar Producto, Quitar/Agotar)
+       3. Control de Reservas de Mesas y Horas Disponibles
+  ========================================================== -->
+  <div id="adminModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[80] hidden items-center justify-center p-2 sm:p-4 overflow-y-auto">
+    <div class="w-full max-w-6xl rounded-3xl bg-slateCard border border-mustard/30 shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+      <!-- Cabecera del Panel Privado -->
+      <div class="p-4 sm:p-5 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-chalk">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded bg-mustard text-chalk">🔒 Acceso Privado (PIN 1234)</span>
+            <span class="text-[11px] text-emerald-400 font-bold">• Panel de Control Interno</span>
+          </div>
+          <h3 class="text-lg sm:text-xl font-extrabold text-white mt-1">Administración, Ventas del Día, Menú y Reservas • FATNESS</h3>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="closeAdminModal()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5">
+            <i data-lucide="x" class="w-4 h-4"></i>
+            <span>Salir del Panel</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Pestañas del Panel del Dueño -->
+      <div class="bg-chalk/80 border-b border-white/10 px-4 sm:px-5 py-2.5 flex items-center gap-2 overflow-x-auto no-scrollbar">
+        <button onclick="switchAdminTab('orders')" id="adminTabBtn-orders" class="px-4 py-2 rounded-xl text-xs font-extrabold transition flex items-center gap-2 whitespace-nowrap">
+          <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+          <span>1. Control de Pedidos y Ventas del Día</span>
+        </button>
+        <button onclick="switchAdminTab('menu')" id="adminTabBtn-menu" class="px-4 py-2 rounded-xl text-xs font-extrabold transition flex items-center gap-2 whitespace-nowrap">
+          <i data-lucide="utensils" class="w-4 h-4"></i>
+          <span>2. Menú, Precios, Agregar / Quitar Platos</span>
+        </button>
+        <button onclick="switchAdminTab('reservations')" id="adminTabBtn-reservations" class="px-4 py-2 rounded-xl text-xs font-extrabold transition flex items-center gap-2 whitespace-nowrap">
+          <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+          <span>3. Control de Reservas y Horas</span>
+        </button>
+      </div>
+
+      <!-- CUERPO DEL PANEL -->
+      <div class="p-4 sm:p-6 overflow-y-auto flex-1 space-y-6 text-xs">
+
+        <!-- =====================================================
+             PESTAÑA 1: CONTROL DE PEDIDOS, INGRESOS Y BUSCADOR
+        ====================================================== -->
+        <div id="adminTab-orders" class="space-y-6">
+          <!-- Tarjetas de Resumen de Ventas e Ingresos del Día -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            <div class="p-4 rounded-2xl bg-chalk border border-mustard/30">
+              <span class="text-[11px] text-slate-400 font-semibold block">Ingresos del Día (USD $)</span>
+              <span id="kpiTodayUSD" class="text-2xl font-black text-mustard mt-1 block">$0.00</span>
+              <span id="kpiTodayVES" class="text-[11px] text-emerald-400 font-bold">Bs. 0,00</span>
+            </div>
+            <div class="p-4 rounded-2xl bg-chalk border border-white/10">
+              <span class="text-[11px] text-slate-400 font-semibold block">Pedidos Registrados Hoy</span>
+              <span id="kpiTodayCount" class="text-2xl font-black text-white mt-1 block">0</span>
+              <span id="kpiTotalAllTime" class="text-[11px] text-slate-400">Total histórico: 0</span>
+            </div>
+            <div class="p-4 rounded-2xl bg-chalk border border-white/10">
+              <span class="text-[11px] text-slate-400 font-semibold block">Estado de Cocina / Entrega</span>
+              <span id="kpiPendingCount" class="text-lg font-extrabold text-amber-400 mt-1 block">0 Pendientes</span>
+              <span id="kpiCompletedCount" class="text-[11px] text-emerald-400 font-bold">0 Entregados</span>
+            </div>
+            <div class="p-4 rounded-2xl bg-chalk border border-white/10 flex flex-col justify-between">
+              <span class="text-[11px] text-slate-400 font-semibold block">Registrar Comanda Recibida</span>
+              <div class="flex flex-col gap-1.5 mt-2">
+                <button onclick="toggleManualOrderBox()" class="w-full py-2 px-3 rounded-xl bg-mustard hover:bg-mustardDark text-chalk font-extrabold text-xs flex items-center justify-center gap-1.5">
+                  <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                  <span>Anotar / Pegar Pedido de WhatsApp</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formulario Desplegable para Anotar Pedido o Pegar Comanda de WhatsApp -->
+          <div id="manualOrderBox" class="hidden p-5 rounded-2xl bg-chalk border border-mustard/40 space-y-4">
+            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+              <h4 class="font-extrabold text-mustard text-sm">📝 Anotar Pedido en el Control del Día</h4>
+              <button onclick="toggleManualOrderBox()" class="text-slate-400 hover:text-white text-xs">Cerrar ✕</button>
+            </div>
+
+            <!-- Opción A: Pegar texto de WhatsApp directo -->
+            <div class="p-3.5 rounded-xl bg-slateCard border border-white/10 space-y-2">
+              <label class="text-[11px] font-bold text-emerald-400 block">
+                ⚡ Opción Rápida: Pega aquí el mensaje de comanda que te envió el cliente por WhatsApp y el sistema llenará los datos solo:
+              </label>
+              <div class="flex flex-col sm:flex-row gap-2">
+                <textarea id="waPasteInput" rows="2" placeholder="Pega aquí el mensaje de WhatsApp que empieza con 🍔 *NUEVA COMANDA / FACTURA WEB - FATNESS*..."
+                          class="flex-1 p-2.5 rounded-xl bg-chalk border border-white/15 text-xs text-white"></textarea>
+                <button type="button" onclick="parseWhatsAppOrderText()" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-chalk font-extrabold text-xs shrink-0">
+                  Extraer y Guardar Pedido
+                </button>
+              </div>
+            </div>
+
+            <!-- Opción B: Llenado manual rápido -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">Nombre del Cliente *</label>
+                <input id="manOrderName" type="text" placeholder="Ej. Carlos Ruiz" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white" />
+              </div>
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">Teléfono</label>
+                <input id="manOrderPhone" type="text" placeholder="Ej. 0424-1234567" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white" />
+              </div>
+              <div class="md:col-span-2">
+                <label class="text-[11px] text-slate-400 block mb-1">Platos Pedidos / Descripción *</label>
+                <input id="manOrderItems" type="text" placeholder="Ej. 2x Fat Burger (Sin cebolla), 1x Mojito" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white" />
+              </div>
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">Total Pagado ($ USD) *</label>
+                <input id="manOrderTotal" type="number" step="0.25" placeholder="Ej. 16.50" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-mustard font-extrabold" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">Modalidad</label>
+                <select id="manOrderMode" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white">
+                  <option value="🛵 Delivery">🛵 Delivery</option>
+                  <option value="🚗 Retiro / Auto">🚗 Retiro / Auto</option>
+                  <option value="🍽️ En el Local">🍽️ En el Local</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">Método de Pago / Referencia</label>
+                <input id="manOrderPay" type="text" placeholder="Ej. Pago Móvil Ref 9412" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white" />
+              </div>
+              <button type="button" onclick="saveManualOrder()" class="py-2.5 px-4 rounded-xl bg-mustard hover:bg-mustardDark text-chalk font-extrabold text-xs">
+                + Guardar Pedido en la Lista
+              </button>
+            </div>
+          </div>
+
+          <!-- BUSCADOR DE PEDIDOS POR NOMBRE DEL CLIENTE -->
+          <div class="p-4 rounded-2xl bg-chalk border border-white/10 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            <div class="relative flex-1">
+              <i data-lucide="search" class="w-4 h-4 text-mustard absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input id="adminOrderSearch" type="text" oninput="renderAdminOrders()"
+                     placeholder="🔍 Buscar pedido por nombre del cliente, teléfono o N° de orden (#FAT-XXXX)..."
+                     class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slateCard border border-mustard/40 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-mustard" />
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="adminOrderDateFilter" onchange="renderAdminOrders()" class="px-3 py-2.5 rounded-xl bg-slateCard border border-white/15 text-xs font-bold text-white">
+                <option value="today">📅 Solo Pedidos de Hoy</option>
+                <option value="all">🗂️ Todo el Historial</option>
+              </select>
+              <button onclick="clearCompletedOrAllOrders()" class="px-3 py-2.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 font-bold text-xs whitespace-nowrap">
+                Limpiar Historial
+              </button>
+            </div>
+          </div>
+
+          <!-- Lista / Tabla de Pedidos -->
+          <div id="adminOrdersContainer" class="space-y-2.5">
+            <!-- Renderizado por JS -->
+          </div>
+        </div>
+
+        <!-- =====================================================
+             PESTAÑA 2: MENÚ, PRECIOS, AGREGAR Y QUITAR PRODUCTOS
+        ====================================================== -->
+        <div id="adminTab-menu" class="hidden space-y-6">
+          <!-- Configuración de Tasa y Delivery -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-2xl bg-chalk border border-white/10 items-end">
+            <div>
+              <label class="text-slate-400 font-semibold block mb-1">Tasa de Cambio Bs/$ (Para calcular Pago Móvil):</label>
+              <input id="adminRateVES" type="number" step="0.01" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white font-bold" />
+            </div>
+            <div>
+              <label class="text-slate-400 font-semibold block mb-1">Costo de Delivery en La Grita ($):</label>
+              <input id="adminDeliveryFee" type="number" step="0.25" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white font-bold" />
+            </div>
+            <button onclick="saveAdminChanges()" class="py-2.5 px-5 rounded-xl bg-mustard hover:bg-mustardDark text-chalk font-extrabold text-xs">
+              💾 Guardar Tasa y Todos los Precios
+            </button>
+          </div>
+
+          <!-- Formulario para Agregar un Nuevo Producto al Menú -->
+          <div class="p-5 rounded-2xl bg-chalk border border-emerald-500/30 space-y-4">
+            <h4 class="font-extrabold text-emerald-400 uppercase tracking-wider text-xs flex items-center gap-2">
+              <i data-lucide="plus-square" class="w-4 h-4"></i>
+              <span>Agregar Nuevo Producto al Menú</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">Nombre del Plato o Bebida *</label>
+                <input id="newProdName" type="text" placeholder="Ej. Doble Fat Burger" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white" />
+              </div>
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">Categoría *</label>
+                <select id="newProdCategory" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white">
+                  <option value="hamburguesas">🍔 Hamburguesas</option>
+                  <option value="perros">🌭 Perros Calientes</option>
+                  <option value="papas">🍟 Papas a la Francesa</option>
+                  <option value="cocteles">🍹 Cócteles</option>
+                  <option value="shots">🥃 Shots y Otras Bebidas</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">Precio (USD $) *</label>
+                <input id="newProdPrice" type="number" step="0.25" placeholder="Ej. 7.50" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-mustard font-bold" />
+              </div>
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">Etiqueta Destacada</label>
+                <input id="newProdBadge" type="text" placeholder="Ej. Nuevo / Especial" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">Descripción / Ingredientes *</label>
+                <input id="newProdDesc" type="text" placeholder="Ej. Doble carne 240g, doble cheddar, tocineta y papas..." class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white" />
+              </div>
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">URL de Foto (Opcional)</label>
+                <input id="newProdImg" type="url" placeholder="Dejar vacío para usar foto por defecto" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white" />
+              </div>
+              <div class="flex items-center justify-between gap-2">
+                <label class="inline-flex items-center gap-2 text-slate-300 cursor-pointer">
+                  <input id="newProdCustom" type="checkbox" checked class="rounded border-white/20 text-mustard" />
+                  <span>¿Personalizable?</span>
+                </label>
+                <button type="button" onclick="addNewMenuProduct()" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-chalk font-extrabold text-xs">
+                  + Agregar al Menú
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lista de Productos Actuales (Editar Precio, Pausar/Agotar o Eliminar) -->
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <h4 class="font-extrabold text-mustard uppercase tracking-wider">Productos Actuales del Menú (Editar Precio, Pausar o Eliminar)</h4>
+              <button onclick="resetDefaultMenuData()" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-[11px]">
+                Restaurar Menú Original de Fábrica
+              </button>
+            </div>
+            <div id="adminPricesList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <!-- Renderizado por JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- =====================================================
+             PESTAÑA 3: CONTROL DE RESERVAS Y DISPONIBILIDAD DE HORAS
+        ====================================================== -->
+        <div id="adminTab-reservations" class="hidden space-y-6">
+          <!-- Bloqueador de Horas Llenas -->
+          <div class="p-4 rounded-2xl bg-chalk border border-white/10 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h4 class="font-extrabold text-mustard uppercase tracking-wider text-xs">Disponibilidad de Horas de Reserva</h4>
+                <p class="text-[11px] text-slate-400">Haz clic en cualquier hora para marcarla como <strong>Ocupada / No Disponible</strong> o <strong>Disponible</strong> en la web.</p>
+              </div>
+            </div>
+            <div id="adminSlotsToggleGrid" class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              <!-- Renderizado por JS -->
+            </div>
+          </div>
+
+          <!-- Buscador y Registro Manual de Reserva -->
+          <div class="p-4 rounded-2xl bg-chalk border border-white/10 space-y-3">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div class="relative flex-1">
+                <i data-lucide="search" class="w-4 h-4 text-mustard absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <input id="adminResSearch" type="text" oninput="renderAdminReservations()"
+                       placeholder="🔍 Buscar reserva por nombre del cliente o teléfono..."
+                       class="w-full pl-10 pr-4 py-2 rounded-xl bg-slateCard border border-white/15 text-xs text-white" />
+              </div>
+              <button onclick="toggleManualResBox()" class="px-4 py-2 rounded-xl bg-mustard text-chalk font-extrabold text-xs">
+                + Anotar Reserva Manualmente
+              </button>
+            </div>
+
+            <div id="manualResBox" class="hidden pt-3 border-t border-white/10 grid grid-cols-1 sm:grid-cols-5 gap-2.5 items-end">
+              <div>
+                <label class="text-[10px] text-slate-400 block mb-1">Nombre Cliente *</label>
+                <input id="manResName" type="text" placeholder="Ej. Luis Gómez" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white" />
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400 block mb-1">Teléfono *</label>
+                <input id="manResPhone" type="text" placeholder="Ej. 0424-0000000" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white" />
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400 block mb-1">Hora *</label>
+                <select id="manResTime" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white"></select>
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400 block mb-1">Personas *</label>
+                <input id="manResGuests" type="text" placeholder="Ej. 4 personas" class="w-full px-3 py-2 rounded-xl bg-slateCard border border-white/15 text-white" />
+              </div>
+              <button onclick="saveManualReservation()" class="py-2 px-4 rounded-xl bg-emerald-500 text-chalk font-extrabold text-xs">
+                Guardar Reserva
+              </button>
+            </div>
+          </div>
+
+          <!-- Lista de Reservas -->
+          <div id="adminReservationsList" class="space-y-2.5">
+            <!-- Renderizado por JS -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       LÓGICA COMPLETA DEL SISTEMA DE PEDIDOS, RESERVAS Y PANEL 1234
+  ========================================================== -->
+  <script>
+    const RESTAURANT_PHONE = "584247139330";
+    const ADMIN_PIN = "1234";
+
+    const DEFAULT_CATEGORY_IMAGES = {
+      hamburguesas: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=700&q=80",
+      perros: "https://images.unsplash.com/photo-1619740455993-9e612b1af08a?auto=format&fit=crop&w=700&q=80",
+      papas: "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=700&q=80",
+      cocteles: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=700&q=80",
+      shots: "https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=700&q=80"
+    };
+
+    // MENÚ REAL EXTRAÍDO DE FATNESS BAR AND FOOD
+    const DEFAULT_MENU = [
+      {
+        id: "hb-cheese",
+        category: "hamburguesas",
+        name: "Cheese Burger",
+        price: 5.50,
+        badge: "Clásica Favorita",
+        customizable: true,
+        available: true,
+        type: "burger",
+        image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=700&q=80",
+        description: "120g de carne, tocineta, queso cheddar, tomate, cebolla caramelizada, pepino, lechuga y salsas. Incluye papas a la francesa."
+      },
+      {
+        id: "hb-fat",
+        category: "hamburguesas",
+        name: "Fat Burger",
+        price: 6.50,
+        badge: "Especial de la Casa",
+        customizable: true,
+        available: true,
+        type: "burger",
+        image: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=700&q=80",
+        description: "Chuleta de cerdo ahumada, tocineta, queso amarillo, tomate, cebolla caramelizada, lechuga, pepino y salsas. Incluye papas a la francesa."
+      },
+      {
+        id: "hb-chicken",
+        category: "hamburguesas",
+        name: "Chicken Burger",
+        price: 6.50,
+        badge: "Con Champiñones",
+        customizable: true,
+        available: true,
+        type: "burger",
+        image: "https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=700&q=80",
+        description: "Pechuga de pollo asada, tocineta, champiñones en crema, queso mozzarella, tomate, cebolla caramelizada, pepino, lechuga y salsas. Incluye papas."
+      },
+      {
+        id: "pc-fatness",
+        category: "perros",
+        name: "Perro Fatness (Especial)",
+        price: 5.00,
+        badge: "Doble Proteína",
+        customizable: true,
+        available: true,
+        type: "hotdog",
+        image: "https://images.unsplash.com/photo-1619740455993-9e612b1af08a?auto=format&fit=crop&w=700&q=80",
+        description: "Perro caliente especial con salchicha polaca, chorifrito, queso blanco y amarillo, salsa tártara, papitas cabello de ángel y pan artesanal."
+      },
+      {
+        id: "pc-normal",
+        category: "perros",
+        name: "Perro Normal",
+        price: 3.00,
+        badge: "Tradicional",
+        customizable: true,
+        available: true,
+        type: "hotdog",
+        image: "https://images.unsplash.com/photo-1541214113241-21578d2d9b62?auto=format&fit=crop&w=700&q=80",
+        description: "Salchicha normal de carne de res, pan artesanal, papitas cabello de ángel, salsa tártara, queso blanco y amarillo."
+      },
+      {
+        id: "pc-chorifrito",
+        category: "perros",
+        name: "Perro Chorifrito",
+        price: 3.75,
+        badge: "Toque Picante",
+        customizable: true,
+        available: true,
+        type: "hotdog",
+        image: "https://images.unsplash.com/photo-1619740455993-9e612b1af08a?auto=format&fit=crop&w=700&q=80",
+        description: "Salchicha picante de carne de cerdo y res, pan artesanal, papitas cabello de ángel, salsa tártara, queso blanco y amarillo."
+      },
+      {
+        id: "pc-aleman",
+        category: "perros",
+        name: "Perro Alemán",
+        price: 4.00,
+        badge: "Ahumado",
+        customizable: true,
+        available: true,
+        type: "hotdog",
+        image: "https://images.unsplash.com/photo-1541214113241-21578d2d9b62?auto=format&fit=crop&w=700&q=80",
+        description: "Salchicha de carne de cerdo ahumada, pan artesanal, papitas cabello de ángel, salsa tártara, queso blanco y amarillo."
+      },
+      {
+        id: "pc-antioqueno",
+        category: "perros",
+        name: "Perro Antioqueño",
+        price: 4.25,
+        badge: "Ahumado a Leña",
+        customizable: true,
+        available: true,
+        type: "hotdog",
+        image: "https://images.unsplash.com/photo-1619740455993-9e612b1af08a?auto=format&fit=crop&w=700&q=80",
+        description: "Chorizo de carne de cerdo y res en especias ahumado a leña artesanal, pan artesanal, tártara, papitas y quesos."
+      },
+      {
+        id: "pc-kosaca",
+        category: "perros",
+        name: "Perro Kosaca",
+        price: 4.00,
+        badge: "Picante Intenso",
+        customizable: true,
+        available: true,
+        type: "hotdog",
+        image: "https://images.unsplash.com/photo-1541214113241-21578d2d9b62?auto=format&fit=crop&w=700&q=80",
+        description: "Salchicha picante Kosaca, pan artesanal, papitas cabello de ángel, salsa tártara, queso blanco y amarillo."
+      },
+      {
+        id: "pc-polaca",
+        category: "perros",
+        name: "Perro Polaca",
+        price: 4.50,
+        badge: "Hierbas & Mostaza",
+        customizable: true,
+        available: true,
+        type: "hotdog",
+        image: "https://images.unsplash.com/photo-1619740455993-9e612b1af08a?auto=format&fit=crop&w=700&q=80",
+        description: "Salchicha de carne de cerdo con hierbas frescas, ajo asado y semillas de mostaza, pan artesanal, tártara y quesos."
+      },
+      {
+        id: "pc-selvanegra",
+        category: "perros",
+        name: "Perro Selva Negra",
+        price: 4.50,
+        badge: "Chorizo Ahumado",
+        customizable: true,
+        available: true,
+        type: "hotdog",
+        image: "https://images.unsplash.com/photo-1541214113241-21578d2d9b62?auto=format&fit=crop&w=700&q=80",
+        description: "Chorizo ahumado Selva Negra, pan artesanal, papitas cabello de ángel, salsa tártara, queso blanco y amarillo."
+      },
+      {
+        id: "pf-clasicas",
+        category: "papas",
+        name: "Porción de Papas a la Francesa Clásicas",
+        price: 2.50,
+        badge: "Crujientes",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=700&q=80",
+        description: "Papas a la francesa doradas al momento con sal y salsas de la casa."
+      },
+      {
+        id: "pf-cheddar",
+        category: "papas",
+        name: "Papas a la Francesa con Queso Cheddar",
+        price: 3.50,
+        badge: "Full Cheddar",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=700&q=80",
+        description: "Papas a la francesa bañadas en abundante queso cheddar fundido."
+      },
+      {
+        id: "coc-gintonic",
+        category: "cocteles",
+        name: "Gin Tonic Frutos Rojos",
+        price: 4.00,
+        badge: "Gin & Frutos Rojos",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=700&q=80",
+        description: "Ginebra, agua tónica, limón y mix de frutos rojos."
+      },
+      {
+        id: "coc-mojito",
+        category: "cocteles",
+        name: "Mojito Clásico o Kiwi",
+        price: 3.50,
+        badge: "Clásico o Kiwi",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?auto=format&fit=crop&w=700&q=80",
+        description: "Ron blanco, limón, azúcar, hierbabuena y soda (disponible Clásico o de Kiwi)."
+      },
+      {
+        id: "coc-daiquiri",
+        category: "cocteles",
+        name: "Daiquirí Mango o Fresa",
+        price: 3.50,
+        badge: "Frappé Tropical",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1560512823-829485b8bf24?auto=format&fit=crop&w=700&q=80",
+        description: "Ron blanco, limón, azúcar y fruta natural a elegir: Mango o Fresa."
+      },
+      {
+        id: "coc-pinacolada",
+        category: "cocteles",
+        name: "Piña Colada",
+        price: 4.00,
+        badge: "Cremosa",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1546171753-97d7676e4602?auto=format&fit=crop&w=700&q=80",
+        description: "Ron blanco, licor de coco, crema de coco, leche condensada y piña."
+      },
+      {
+        id: "coc-bluemargarita",
+        category: "cocteles",
+        name: "Blue Margarita",
+        price: 4.00,
+        badge: "Tequila & Blue Curaçao",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1536935338788-846bb9981813?auto=format&fit=crop&w=700&q=80",
+        description: "Tequila, Blue Curaçao, triple sec, limón y borde escarchado con sal."
+      },
+      {
+        id: "coc-espressomartini",
+        category: "cocteles",
+        name: "Espresso Martini",
+        price: 4.00,
+        badge: "Vodka & Café",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1545438102-799c3991ffb2?auto=format&fit=crop&w=700&q=80",
+        description: "Vodka, licor de café y espresso recién preparado."
+      },
+      {
+        id: "coc-oldcuban",
+        category: "cocteles",
+        name: "Old Cuban",
+        price: 4.25,
+        badge: "Ron Dorado & Champagne",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=700&q=80",
+        description: "Ron dorado, limón, azúcar morena, hierbabuena y champagne."
+      },
+      {
+        id: "coc-polvomedianoche",
+        category: "cocteles",
+        name: "Polvo de Medianoche",
+        price: 4.00,
+        badge: "Especialidad",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1536935338788-846bb9981813?auto=format&fit=crop&w=700&q=80",
+        description: "Jarabe de chicle, ginebra y bebida negra."
+      },
+      {
+        id: "coc-cheladamaracuya",
+        category: "cocteles",
+        name: "Chelada Maracuyá",
+        price: 3.00,
+        badge: "Refrescante",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1560512823-829485b8bf24?auto=format&fit=crop&w=700&q=80",
+        description: "Cerveza bien fría, limón, maracuyá y sal."
+      },
+      {
+        id: "coc-cubalibre",
+        category: "cocteles",
+        name: "Cuba Libre",
+        price: 3.25,
+        badge: "Clásico",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=700&q=80",
+        description: "Ron dorado, refresco de cola y limón."
+      },
+      {
+        id: "sh-shots",
+        category: "shots",
+        name: "Shots (Tequila / Submarino / Kamikaze / Layds)",
+        price: 2.50,
+        badge: "Elige tu Shot",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=700&q=80",
+        description: "Tequila (limón y sal), Submarino (tequila y cerveza), Kamikaze (vodka, triple sec, zumo de limón) o Layds (vodka, blue curaçao, granadina)."
+      },
+      {
+        id: "ot-sangria",
+        category: "shots",
+        name: "Copa de Sangría de la Casa",
+        price: 3.50,
+        badge: "Con Frutas",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=700&q=80",
+        description: "Sangría fría con rodajas de cítricos y toque frutal."
+      },
+      {
+        id: "ot-cerveza",
+        category: "shots",
+        name: "Cerveza Fría",
+        price: 1.50,
+        badge: "Bien Fría",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=700&q=80",
+        description: "Cerveza bien fría para acompañar tus perros o hamburguesas."
+      },
+      {
+        id: "ot-refresco",
+        category: "shots",
+        name: "Refresco / Nestea",
+        price: 1.50,
+        badge: "Sin Alcohol",
+        customizable: false,
+        available: true,
+        image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=700&q=80",
+        description: "Refresco o vaso de Nestea frío."
+      }
+    ];
+
+    const HOW_YOU_WANT_IT_OPTIONS = [
+      "Con todo (Receta original)",
+      "Sin queso",
+      "Sin cebolla caramelizada",
+      "Sin tocineta",
+      "Sin tomate / lechuga",
+      "Sin pepino",
+      "Sin salsas",
+      "Salsas aparte"
+    ];
+
+    const EXTRAS_LIST = [
+      { id: "ex-cheddar", name: "Papas bañadas con Queso Cheddar", price: 1.00 },
+      { id: "ex-carne", name: "Extra de Carne 120g / Chuleta", price: 2.00 },
+      { id: "ex-salchicha", name: "Salchicha Polaca / Chorifrito Extra", price: 1.50 },
+      { id: "ex-tocineta", name: "Extra de Tocineta Ahumada", price: 1.00 },
+      { id: "ex-queso", name: "Extra de Queso Cheddar / Mozzarella", price: 1.00 },
+      { id: "ex-tartara", name: "Extra de Salsa Tártara de la Casa", price: 0.50 }
+    ];
+
+    const RESERVATION_HOURS = [
+      "6:00 p.m.",
+      "6:30 p.m.",
+      "7:00 p.m.",
+      "7:30 p.m.",
+      "8:00 p.m.",
+      "8:30 p.m.",
+      "9:00 p.m.",
+      "9:30 p.m.",
+      "10:00 p.m.",
+      "10:30 p.m."
+    ];
+
+    const PAYMENT_INFO = {
+      pagomovil: {
+        id: "pagomovil",
+        title: "Pago Móvil (Bs)",
+        badge: "Tasa del Día",
+        icon: "smartphone",
+        details: [
+          { label: "Banco", val: "Banco (Por confirmar)" },
+          { label: "Teléfono", val: "04247139330" },
+          { label: "Cédula / RIF", val: "V-00.000.000" }
+        ]
+      },
+      bancolombia: {
+        id: "bancolombia",
+        title: "Bancolombia / Nequi",
+        badge: "Pesos COP",
+        icon: "landmark",
+        details: [
+          { label: "Cuenta Bancolombia", val: "000-000000-00" },
+          { label: "Nequi", val: "3000000000" }
+        ]
+      },
+      efectivo: {
+        id: "efectivo",
+        title: "Efectivo (USD / COP)",
+        badge: "Pago al Recibir o en Caja",
+        icon: "banknote",
+        details: [
+          { label: "Instrucción", val: "Indica abajo con qué billete pagas para enviarte el vuelto exacto con el motorizado." }
+        ]
+      },
+      binance: {
+        id: "binance",
+        title: "Binance Pay / Zinli",
+        badge: "USDT / USD",
+        icon: "coins",
+        details: [
+          { label: "Binance ID / Correo", val: "pagos@fatness.com" }
+        ]
+      }
+    };
+
+    // ESTADO DE LA APLICACIÓN
+    let menuData = JSON.parse(localStorage.getItem("fatness_menu")) || DEFAULT_MENU;
+    // Asegurar que todos los items tengan propiedad available
+    menuData.forEach(item => {
+      if (typeof item.available === "undefined") item.available = true;
+    });
+
+    let rateVES = parseFloat(localStorage.getItem("fatness_rate_ves")) || 70.00;
+    let deliveryFee = parseFloat(localStorage.getItem("fatness_delivery_fee")) || 1.50;
+    let currentCategory = "all";
+    let orderMode = "delivery";
+    let cart = JSON.parse(localStorage.getItem("fatness_cart")) || [];
+    let ordersHistory = JSON.parse(localStorage.getItem("fatness_orders_history")) || [];
+    let reservationsList = JSON.parse(localStorage.getItem("fatness_reservations")) || [];
+    let blockedHours = JSON.parse(localStorage.getItem("fatness_blocked_hours")) || [];
+
+    let selectedResHour = "7:00 p.m.";
+    let activeItem = null;
+    let custQty = 1;
+    let preparedWhatsAppText = "";
+
+    // Detector de código invisible 1234 en el teclado
+    let secretKeyBuffer = "";
+    let logoTapCount = 0;
+    let logoTapTimer = null;
+
+    function getTodayISO() {
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function formatUSD(val) {
+      return `$${Number(val || 0).toFixed(2)}`;
+    }
+
+    function formatVES(valUSD) {
+      const bs = Number(valUSD || 0) * rateVES;
+      return `Bs. ${bs.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById("toastBox");
+      document.getElementById("toastText").textContent = msg;
+      box.classList.remove("opacity-0", "-translate-y-3");
+      box.classList.add("opacity-100", "translate-y-0");
+      setTimeout(() => {
+        box.classList.remove("opacity-100", "translate-y-0");
+        box.classList.add("opacity-0", "-translate-y-3");
+      }, 2500);
+    }
+
+    function copyText(text, label = "Dato") {
+      navigator.clipboard?.writeText(text);
+      showToast(`¡${label} copiado: ${text}!`);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Inicializar fecha de reserva en Hoy
+      const resDateInput = document.getElementById("resDate");
+      if (resDateInput) {
+        resDateInput.value = getTodayISO();
+        resDateInput.min = getTodayISO();
+      }
+
+      // Poblar selector de horas en modal manual de admin
+      const manResTime = document.getElementById("manResTime");
+      if (manResTime) {
+        manResTime.innerHTML = RESERVATION_HOURS.map(h => `<option value="${h}">${h}</option>`).join("");
+      }
+
+      // Escuchar código secreto 1234 escrito en cualquier parte de la página
+      document.addEventListener("keydown", (e) => {
+        if (e.key && e.key.length === 1) {
+          secretKeyBuffer = (secretKeyBuffer + e.key).slice(-4);
+          if (secretKeyBuffer === ADMIN_PIN) {
+            secretKeyBuffer = "";
+            const searchEl = document.getElementById("menuSearchInput");
+            if (searchEl && searchEl.value === ADMIN_PIN) {
+              searchEl.value = "";
+              renderMenu();
+            }
+            openAdminModal();
+            showToast("🔓 Panel del Dueño Desbloqueado");
+          }
+        }
+      });
+
+      setOrderMode("delivery");
+      filterCategory("all");
+      renderReservationTimeSlots();
+      renderPaymentCards();
+      renderCartPaymentDetails();
+      updateCartUI();
+      lucide.createIcons();
+    });
+
+    // Acceso en móviles o PC escribiendo 1234 en el buscador del menú
+    function handleSearchOrPin(inputEl) {
+      const val = (inputEl.value || "").trim();
+      if (val === ADMIN_PIN) {
+        inputEl.value = "";
+        renderMenu();
+        openAdminModal();
+        showToast("🔓 Panel del Dueño Desbloqueado");
+        return;
+      }
+      renderMenu();
+    }
+
+    // Acceso alternativo: 3 toques rápidos en el logo FAT
+    function handleSecretLogoTap() {
+      logoTapCount++;
+      clearTimeout(logoTapTimer);
+      logoTapTimer = setTimeout(() => { logoTapCount = 0; }, 1200);
+      if (logoTapCount >= 3) {
+        logoTapCount = 0;
+        const pin = prompt("Ingresa el código de acceso privado:");
+        if (pin === ADMIN_PIN) {
+          openAdminModal();
+          showToast("🔓 Panel del Dueño Desbloqueado");
+        }
+      }
+    }
+
+    // Cambiar modalidad de entrega
+    function setOrderMode(mode) {
+      orderMode = mode;
+      const modes = ["delivery", "pickup", "dinein"];
+      modes.forEach(m => {
+        const active = m === mode;
+        const hBtn = document.getElementById(`modeBtn-${m}`);
+        if (hBtn) {
+          hBtn.className = active
+            ? "px-3 py-1.5 rounded-lg transition bg-mustard text-chalk font-extrabold"
+            : "px-3 py-1.5 rounded-lg transition text-slate-300 hover:text-white";
+        }
+        const heroBtn = document.getElementById(`heroMode-${m}`);
+        if (heroBtn) {
+          heroBtn.className = active
+            ? "p-3 rounded-xl border border-mustard bg-mustard/15 text-white text-left transition shadow-lg shadow-mustard/10"
+            : "p-3 rounded-xl border border-white/10 bg-slateCard/70 text-slate-300 hover:border-white/25 text-left transition";
+        }
+        const cBtn = document.getElementById(`cartMode-${m}`);
+        if (cBtn) {
+          cBtn.className = active
+            ? "py-2 rounded-lg transition bg-mustard text-chalk font-extrabold"
+            : "py-2 rounded-lg transition text-slate-400 hover:text-white";
+        }
+      });
+
+      const addrLabel = document.getElementById("addressLabel");
+      const addrInput = document.getElementById("clientAddress");
+      const delivRow = document.getElementById("summaryDeliveryRow");
+
+      if (mode === "delivery") {
+        addrLabel.textContent = "Dirección exacta en La Grita y punto de referencia *";
+        addrInput.placeholder = "Ej. Calle 3 cerca de..., casa portón negro";
+        delivRow.classList.remove("hidden");
+      } else if (mode === "pickup") {
+        addrLabel.textContent = "Hora estimada de retiro o descripción de tu vehículo (si pides desde el auto) *";
+        addrInput.placeholder = "Ej. Paso en 20 min en Toyota Corolla gris";
+        delivRow.classList.add("hidden");
+      } else {
+        addrLabel.textContent = "Número de mesa o hora a la que llegas al local *";
+        addrInput.placeholder = "Ej. Mesa 4 / Llegamos en 15 minutos";
+        delivRow.classList.add("hidden");
+      }
+
+      updateCartUI();
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll(".cat-pill").forEach(btn => {
+        btn.className = "cat-pill whitespace-nowrap px-4 py-2 rounded-xl text-xs font-extrabold transition bg-slateCard text-slate-300 border border-white/10 hover:border-white/25";
+      });
+      const active = document.getElementById(`catBtn-${cat}`);
+      if (active) {
+        active.className = "cat-pill whitespace-nowrap px-4 py-2 rounded-xl text-xs font-extrabold transition bg-mustard text-chalk shadow-lg shadow-mustard/20";
+      }
+      renderMenu();
+    }
+
+    function renderMenu() {
+      const container = document.getElementById("menuSectionsContainer");
+      const q = (document.getElementById("menuSearchInput").value || "").toLowerCase().trim();
+
+      const categoriesOrder = ["hamburguesas", "perros", "papas", "cocteles", "shots"];
+      const categoryTitles = {
+        hamburguesas: "🍔 HAMBURGUESAS (ACOMPAÑADAS DE PAPAS A LA FRANCESA)",
+        perros: "🌭 PERROS CALIENTES (TODOS INCLUYEN PAN ARTESANAL, PAPITAS, TÁRTARA Y QUESOS)",
+        papas: "🍟 PAPAS A LA FRANCESA",
+        cocteles: "🍹 CÓCTELES DE AUTOR",
+        shots: "🥃 SHOTS, SANGRÍA, CERVEZAS Y REFRESCOS"
+      };
+
+      const catsToShow = currentCategory === "all" ? categoriesOrder : [currentCategory];
+      let html = "";
+
+      catsToShow.forEach(catKey => {
+        const items = menuData.filter(item =>
+          item.category === catKey &&
+          item.available !== false &&
+          (item.name.toLowerCase().includes(q) || item.description.toLowerCase().includes(q))
+        );
+
+        if (items.length === 0) return;
+
+        html += `
+          <section>
+            <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-2">
+              <h2 class="font-display text-2xl sm:text-3xl tracking-wide text-mustard">${categoryTitles[catKey]}</h2>
+              <span class="text-xs text-slate-400">${items.length} opciones</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${items.map(item => `
+                <article onclick="onMenuItemClick('${item.id}')" class="rounded-2xl food-card p-4 flex gap-4 items-center cursor-pointer group">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-white/5 text-mustard border border-mustard/20">
+                        ${item.badge || 'Especial'}
+                      </span>
+                      ${item.customizable ? `<span class="text-[10px] text-emerald-400 font-semibold">• Personalizable</span>` : ''}
+                    </div>
+                    <h3 class="font-extrabold text-base sm:text-lg text-white group-hover:text-mustard transition truncate">${item.name}</h3>
+                    <p class="text-xs text-slate-400 line-clamp-2 mt-1 leading-relaxed">${item.description}</p>
+                    
+                    <div class="mt-3 flex items-center justify-between">
+                      <div>
+                        <span class="text-lg font-extrabold text-white">${formatUSD(item.price)}</span>
+                        <span class="text-[11px] text-slate-400 ml-1.5">(${formatVES(item.price)})</span>
+                      </div>
+                      <button type="button" class="px-3 py-1.5 rounded-xl bg-mustard text-chalk font-extrabold text-xs flex items-center gap-1 group-hover:scale-105 transition">
+                        <span>${item.customizable ? 'Personalizar' : 'Agregar'}</span>
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 border border-white/10 relative">
+                    <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-110 transition duration-300" />
+                  </div>
+                </article>
+              `).join('')}
+            </div>
+          </section>
+        `;
+      });
+
+      container.innerHTML = html || `<p class="text-center text-slate-400 py-10">No se encontraron platos disponibles con esa búsqueda.</p>`;
+      lucide.createIcons();
+    }
+
+    function onMenuItemClick(itemId) {
+      const item = menuData.find(i => i.id === itemId);
+      if (!item) return;
+
+      if (!item.customizable) {
+        addItemToCart({
+          itemId: item.id,
+          name: item.name,
+          basePrice: item.price,
+          unitPrice: item.price,
+          qty: 1,
+          preferences: [],
+          extras: [],
+          notes: ""
+        });
+        showToast(`¡${item.name} agregado al pedido!`);
+        return;
+      }
+
+      activeItem = item;
+      custQty = 1;
+      document.getElementById("custCategoryBadge").textContent = item.category === "hamburguesas" ? "🍔 Personaliza tu Hamburguesa" : "🌭 Personaliza tu Plato";
+      document.getElementById("custTitle").textContent = item.name;
+      document.getElementById("custDesc").textContent = item.description;
+      document.getElementById("custQtyValue").textContent = "1";
+
+      const body = document.getElementById("custOptionsBody");
+      body.innerHTML = `
+        <div>
+          <div class="flex items-center justify-between mb-2.5">
+            <div>
+              <h4 class="text-sm font-extrabold text-white">¿Cómo lo quieres?</h4>
+              <p class="text-[11px] text-slate-400">Selecciona tus preferencias de ingredientes</p>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Opcional</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            ${HOW_YOU_WANT_IT_OPTIONS.map((opt, idx) => `
+              <label class="custom-option cursor-pointer">
+                <input type="checkbox" name="custPref" value="${opt}" ${idx === 0 ? 'checked' : ''} onchange="onPreferenceCheckboxChange(this)" class="sr-only" />
+                <div class="p-2.5 rounded-xl border border-white/10 bg-chalk text-xs font-semibold text-slate-300 flex items-center gap-2 transition">
+                  <span class="check-dot w-4 h-4 rounded border border-white/30 flex items-center justify-center text-[10px] font-black">✓</span>
+                  <span class="truncate">${opt}</span>
+                </div>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-2.5">
+            <div>
+              <h4 class="text-sm font-extrabold text-white">Hazlo aún mejor (Adicionales)</h4>
+              <p class="text-[11px] text-slate-400">Agrega extras o mejora tus papas con queso cheddar</p>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-white/10 text-slate-300">Extras</span>
+          </div>
+          <div class="space-y-2">
+            ${EXTRAS_LIST.map(ex => `
+              <label class="custom-option cursor-pointer block">
+                <input type="checkbox" name="custExtra" value="${ex.id}" onchange="recalcCustomizerPrice()" class="sr-only" />
+                <div class="p-3 rounded-xl border border-white/10 bg-chalk text-xs flex items-center justify-between transition">
+                  <div class="flex items-center gap-2.5">
+                    <span class="check-dot w-4 h-4 rounded border border-white/30 flex items-center justify-center text-[10px] font-black">+</span>
+                    <span class="font-bold text-slate-200">${ex.name}</span>
+                  </div>
+                  <span class="font-extrabold text-mustard">+${formatUSD(ex.price)}</span>
+                </div>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-extrabold text-white mb-1.5">Comentarios adicionales para cocina:</label>
+          <textarea id="custNotes" rows="2" placeholder="Ej. La carne bien cocida, poca mostaza, picar a la mitad..."
+                    class="w-full p-3 rounded-xl bg-chalk border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-mustard"></textarea>
+        </div>
+      `;
+
+      recalcCustomizerPrice();
+      const modal = document.getElementById("customizerModal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      lucide.createIcons();
+    }
+
+    function onPreferenceCheckboxChange(changedInput) {
+      const allPrefs = Array.from(document.querySelectorAll('input[name="custPref"]'));
+      if (changedInput.value.startsWith("Con todo") && changedInput.checked) {
+        allPrefs.forEach(inp => { if (inp !== changedInput) inp.checked = false; });
+      } else if (changedInput.checked) {
+        allPrefs[0].checked = false;
+      }
+    }
+
+    function closeCustomizerModal() {
+      const modal = document.getElementById("customizerModal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function changeCustQty(delta) {
+      custQty = Math.max(1, custQty + delta);
+      document.getElementById("custQtyValue").textContent = String(custQty);
+      recalcCustomizerPrice();
+    }
+
+    function recalcCustomizerPrice() {
+      if (!activeItem) return;
+      const checkedExtras = Array.from(document.querySelectorAll('input[name="custExtra"]:checked'))
+        .map(inp => EXTRAS_LIST.find(e => e.id === inp.value))
+        .filter(Boolean);
+
+      const extrasSum = checkedExtras.reduce((acc, e) => acc + e.price, 0);
+      const total = (activeItem.price + extrasSum) * custQty;
+      document.getElementById("custFinalPriceBtn").textContent = formatUSD(total);
+    }
+
+    function confirmAddCustomizedItem() {
+      if (!activeItem) return;
+      const prefs = Array.from(document.querySelectorAll('input[name="custPref"]:checked')).map(i => i.value);
+      const checkedExtras = Array.from(document.querySelectorAll('input[name="custExtra"]:checked'))
+        .map(inp => EXTRAS_LIST.find(e => e.id === inp.value))
+        .filter(Boolean);
+      const notes = (document.getElementById("custNotes").value || "").trim();
+
+      const extrasSum = checkedExtras.reduce((acc, e) => acc + e.price, 0);
+      const unitPrice = activeItem.price + extrasSum;
+
+      addItemToCart({
+        itemId: activeItem.id,
+        name: activeItem.name,
+        basePrice: activeItem.price,
+        unitPrice,
+        qty: custQty,
+        preferences: prefs.length ? prefs : ["Con todo (Receta original)"],
+        extras: checkedExtras,
+        notes
+      });
+
+      closeCustomizerModal();
+      showToast(`¡${activeItem.name} personalizado agregado!`);
+    }
+
+    function addItemToCart(cartEntry) {
+      cart.push({
+        uid: `${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        ...cartEntry
+      });
+      saveCart();
+      updateCartUI();
+    }
+
+    function removeCartItem(uid) {
+      cart = cart.filter(c => c.uid !== uid);
+      saveCart();
+      updateCartUI();
+    }
+
+    function clearCart() {
+      cart = [];
+      saveCart();
+      updateCartUI();
+    }
+
+    function saveCart() {
+      localStorage.setItem("fatness_cart", JSON.stringify(cart));
+    }
+
+    function updateCartUI() {
+      const totalCount = cart.reduce((acc, i) => acc + i.qty, 0);
+      const subtotalUSD = cart.reduce((acc, i) => acc + i.unitPrice * i.qty, 0);
+      const currentDelivery = (orderMode === "delivery" && totalCount > 0) ? deliveryFee : 0;
+      const grandTotalUSD = subtotalUSD + currentDelivery;
+
+      document.getElementById("headerCartBadge").textContent = totalCount;
+
+      const stickyBar = document.getElementById("stickyOrderBar");
+      if (totalCount > 0) {
+        stickyBar.classList.remove("hidden");
+        document.getElementById("stickyBarCount").textContent = `${totalCount} ${totalCount === 1 ? 'plato' : 'platos'}`;
+        const modeNames = { delivery: "• 🛵 Delivery", pickup: "• 🚗 Retiro/Auto", dinein: "• 🍽️ En Local" };
+        document.getElementById("stickyBarMode").textContent = modeNames[orderMode];
+        document.getElementById("stickyBarTotal").textContent = formatUSD(grandTotalUSD);
+      } else {
+        stickyBar.classList.add("hidden");
+      }
+
+      const listEl = document.getElementById("cartItemsList");
+      if (cart.length === 0) {
+        listEl.innerHTML = `
+          <div class="p-6 rounded-2xl bg-chalk/60 border border-white/5 text-center">
+            <p class="text-xs font-bold text-slate-300">Aún no has agregado platos a tu orden.</p>
+            <p class="text-[11px] text-slate-500 mt-1">Toca cualquier Hamburguesa, Perro Caliente o Cóctel para comenzar.</p>
+          </div>
+        `;
+      } else {
+        listEl.innerHTML = cart.map(item => `
+          <div class="p-3.5 rounded-2xl bg-chalk border border-white/10 flex items-start justify-between gap-3">
+            <div class="text-xs space-y-1 flex-1">
+              <div class="flex items-center justify-between">
+                <span class="font-extrabold text-white">${item.qty}x ${item.name}</span>
+                <span class="font-extrabold text-mustard">${formatUSD(item.unitPrice * item.qty)}</span>
+              </div>
+              ${item.preferences?.length ? `<p class="text-[11px] text-slate-300">👉 <strong>Prep:</strong> ${item.preferences.join(", ")}</p>` : ''}
+              ${item.extras?.length ? `<p class="text-[11px] text-emerald-400">➕ <strong>Extras:</strong> ${item.extras.map(e => e.name).join(", ")}</p>` : ''}
+              ${item.notes ? `<p class="text-[11px] text-amber-300 italic">📝 "${item.notes}"</p>` : ''}
+            </div>
+            <button onclick="removeCartItem('${item.uid}')" class="p-1.5 rounded-lg bg-white/5 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById("summarySubtotal").textContent = formatUSD(subtotalUSD);
+      document.getElementById("summaryDelivery").textContent = formatUSD(currentDelivery);
+      document.getElementById("summaryTotalUSD").textContent = formatUSD(grandTotalUSD);
+      document.getElementById("summaryTotalVES").textContent = formatVES(grandTotalUSD);
+      lucide.createIcons();
+    }
+
+    function toggleCartDrawer(open) {
+      const drawer = document.getElementById("cartDrawer");
+      const backdrop = document.getElementById("cartBackdrop");
+      if (open) {
+        backdrop.classList.remove("hidden");
+        setTimeout(() => backdrop.classList.remove("opacity-0"), 10);
+        drawer.classList.remove("translate-x-full");
+      } else {
+        backdrop.classList.add("opacity-0");
+        drawer.classList.add("translate-x-full");
+        setTimeout(() => backdrop.classList.add("hidden"), 300);
+      }
+    }
+
+    function renderPaymentCards() {
+      const container = document.getElementById("paymentCardsContainer");
+      container.innerHTML = Object.values(PAYMENT_INFO).map(p => `
+        <div class="p-5 rounded-2xl food-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-xl bg-mustard/15 text-mustard flex items-center justify-center">
+                <i data-lucide="${p.icon}" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-white/5 text-slate-300 border border-white/10">${p.badge}</span>
+            </div>
+            <h3 class="font-extrabold text-white text-base mb-2">${p.title}</h3>
+            <div class="space-y-1.5">
+              ${p.details.map(d => `
+                <div class="p-2 rounded-lg bg-chalk/90 border border-white/5 flex items-center justify-between gap-2 text-xs">
+                  <div class="truncate">
+                    <span class="text-slate-400 text-[11px] block">${d.label}:</span>
+                    <strong class="text-white">${d.val}</strong>
+                  </div>
+                  <button onclick="copyText('${d.val}', '${d.label}')" class="px-2 py-1 rounded bg-mustard/20 hover:bg-mustard text-mustard hover:text-chalk font-bold text-[10px] transition shrink-0">
+                    Copiar
+                  </button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderCartPaymentDetails() {
+      const key = document.getElementById("cartPaymentSelect").value;
+      const p = PAYMENT_INFO[key];
+      const box = document.getElementById("cartPaymentBox");
+      if (!p || !box) return;
+
+      box.innerHTML = p.details.map(d => `
+        <div class="flex items-center justify-between gap-2 text-xs bg-chalk px-2.5 py-1.5 rounded-lg">
+          <div class="truncate">
+            <span class="text-slate-400">${d.label}:</span>
+            <strong class="text-white ml-1">${d.val}</strong>
+          </div>
+          <button type="button" onclick="copyText('${d.val}', '${d.label}')" class="px-2 py-0.5 rounded bg-mustard text-chalk font-extrabold text-[10px] shrink-0">
+            Copiar
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // =========================================================
+    // SISTEMA DE RESERVAS DE MESAS CON DISPONIBILIDAD DE HORAS
+    // =========================================================
+    function renderReservationTimeSlots() {
+      const grid = document.getElementById("resTimeSlotsGrid");
+      const badge = document.getElementById("resAvailabilityBadge");
+      if (!grid) return;
+
+      // Si la hora seleccionada fue bloqueada, intentar elegir la primera disponible
+      if (blockedHours.includes(selectedResHour)) {
+        const firstFree = RESERVATION_HOURS.find(h => !blockedHours.includes(h));
+        if (firstFree) selectedResHour = firstFree;
+      }
+
+      grid.innerHTML = RESERVATION_HOURS.map(hour => {
+        const isBlocked = blockedHours.includes(hour);
+        const isSelected = selectedResHour === hour && !isBlocked;
+
+        if (isBlocked) {
+          return `
+            <button type="button" disabled
+                    class="p-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-300/70 text-xs font-bold cursor-not-allowed flex flex-col items-center">
+              <span>${hour}</span>
+              <span class="text-[9px] uppercase font-extrabold text-rose-400">Ocupado</span>
+            </button>
+          `;
+        }
+
+        return `
+          <button type="button" onclick="selectReservationHour('${hour}')"
+                  class="p-2.5 rounded-xl border text-xs font-extrabold transition flex flex-col items-center ${
+                    isSelected
+                      ? 'border-mustard bg-mustard text-chalk shadow-lg shadow-mustard/20'
+                      : 'border-white/10 bg-chalk text-white hover:border-mustard/50'
+                  }">
+            <span>${hour}</span>
+            <span class="text-[9px] uppercase font-bold ${isSelected ? 'text-chalk' : 'text-emerald-400'}">Disponible</span>
+          </button>
+        `;
+      }).join("");
+
+      const isCurrentlyBlocked = blockedHours.includes(selectedResHour);
+      if (badge) {
+        if (isCurrentlyBlocked) {
+          badge.className = "text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30";
+          badge.textContent = "✕ Hora sin cupo";
+        } else {
+          badge.className = "text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+          badge.textContent = `✓ ${selectedResHour} Disponible`;
+        }
+      }
+    }
+
+    function selectReservationHour(hour) {
+      if (blockedHours.includes(hour)) return;
+      selectedResHour = hour;
+      renderReservationTimeSlots();
+    }
+
+    function submitTableReservation() {
+      const dateVal = document.getElementById("resDate").value || getTodayISO();
+      const guestsVal = document.getElementById("resGuests").value;
+      const nameVal = document.getElementById("resClientName").value.trim();
+      const phoneVal = document.getElementById("resClientPhone").value.trim();
+      const notesVal = document.getElementById("resClientNotes").value.trim();
+
+      if (blockedHours.includes(selectedResHour)) {
+        alert("Por favor selecciona una hora que esté disponible.");
+        return;
+      }
+
+      if (!nameVal || !phoneVal) {
+        alert("Por favor ingresa tu Nombre y Número de Teléfono para poder comunicarnos contigo y confirmar tu mesa.");
+        return;
+      }
+
+      const resId = `#RES-${Math.floor(100 + Math.random() * 900)}`;
+      const newRes = {
+        id: resId,
+        date: dateVal,
+        time: selectedResHour,
+        guests: guestsVal,
+        clientName: nameVal,
+        clientPhone: phoneVal,
+        notes: notesVal,
+        status: "Confirmada",
+        createdAt: new Date().toLocaleString("es-VE", { dateStyle: "short", timeStyle: "short" })
+      };
+
+      reservationsList.unshift(newRes);
+      localStorage.setItem("fatness_reservations", JSON.stringify(reservationsList));
+
+      let wa = `📅 *SOLICITUD DE RESERVA DE MESA - FATNESS* 🍔\n`;
+      wa += `🔖 *Código:* ${resId}\n`;
+      wa += `🗓️ *Fecha:* ${dateVal}\n`;
+      wa += `⏰ *Hora Reservada:* ${selectedResHour} (Disponible)\n`;
+      wa += `👥 *Cantidad de Personas:* ${guestsVal}\n\n`;
+      wa += `👤 *Nombre:* ${nameVal}\n`;
+      wa += `📞 *Teléfono de Contacto:* ${phoneVal}\n`;
+      if (notesVal) wa += `📝 *Nota:* ${notesVal}\n`;
+      wa += `\n_Nota: En caso de llegar la hora de la reserva y aún no estar en el local, quedo atento(a) a su llamada o mensaje a este número para confirmar asistencia._`;
+
+      showToast("¡Reserva generada! Enviando a WhatsApp...");
+      window.open(`https://wa.me/${RESTAURANT_PHONE}?text=${encodeURIComponent(wa)}`, "_blank");
+    }
+
+    // =========================================================
+    // GENERAR FACTURA DIGITAL Y REGISTRAR EN CONTROL DEL DÍA
+    // =========================================================
+    function generateInvoiceAndSend() {
+      if (cart.length === 0) {
+        alert("Agrega al menos un producto del menú antes de generar tu factura.");
+        return;
+      }
+
+      const name = document.getElementById("clientName").value.trim();
+      const phone = document.getElementById("clientPhone").value.trim();
+      const address = document.getElementById("clientAddress").value.trim();
+      const paymentKey = document.getElementById("cartPaymentSelect").value;
+      const paymentTitle = PAYMENT_INFO[paymentKey]?.title || paymentKey;
+      const paymentRef = document.getElementById("clientPaymentRef").value.trim() || "Por adjuntar capture en el chat";
+
+      if (!name || !phone || !address) {
+        alert("Por favor completa tu Nombre, Teléfono y el dato de Entrega/Mesa para que el restaurante despache tu pedido sin demoras.");
+        return;
+      }
+
+      const invId = `#FAT-${Math.floor(1000 + Math.random() * 9000)}`;
+      const nowStr = new Date().toLocaleString("es-VE", { dateStyle: "short", timeStyle: "short" });
+      const modeLabels = {
+        delivery: "🛵 DELIVERY A DOMICILIO",
+        pickup: "🚗 RETIRO EN LOCAL / DESDE EL AUTOMÓVIL",
+        dinein: "🍽️ CONSUMO EN EL LOCAL (MESA)"
+      };
+
+      const subtotalUSD = cart.reduce((acc, i) => acc + i.unitPrice * i.qty, 0);
+      const currentDelivery = orderMode === "delivery" ? deliveryFee : 0;
+      const totalUSD = subtotalUSD + currentDelivery;
+
+      // Guardar automáticamente el pedido en el historial de ventas del día
+      const summaryItemsText = cart.map(item => {
+        const prefsStr = item.preferences?.length ? ` (${item.preferences.join(", ")})` : "";
+        const extrasStr = item.extras?.length ? ` + Extras: ${item.extras.map(e => e.name).join(", ")}` : "";
+        return `${item.qty}x ${item.name}${prefsStr}${extrasStr}`;
+      }).join(" | ");
+
+      const orderRecord = {
+        id: invId,
+        dateISO: getTodayISO(),
+        timeStr: nowStr,
+        clientName: name,
+        clientPhone: phone,
+        address: address,
+        mode: modeLabels[orderMode],
+        itemsSummary: summaryItemsText,
+        totalUSD: totalUSD,
+        paymentMethod: paymentTitle,
+        paymentRef: paymentRef,
+        status: "Pendiente"
+      };
+
+      ordersHistory.unshift(orderRecord);
+      localStorage.setItem("fatness_orders_history", JSON.stringify(ordersHistory));
+
+      // Rellenar vista previa de la Factura Digital
+      document.getElementById("invNumber").textContent = invId;
+      document.getElementById("invoiceBodyContent").innerHTML = `
+        <div class="p-3 rounded-xl bg-slate-100 space-y-1">
+          <p><strong>Modalidad:</strong> ${modeLabels[orderMode]}</p>
+          <p><strong>Cliente:</strong> ${name} (${phone})</p>
+          <p><strong>Ubicación / Detalle:</strong> ${address}</p>
+          <p><strong>Fecha y Hora:</strong> ${nowStr}</p>
+        </div>
+
+        <div class="divide-y divide-slate-200 border-y border-slate-200 py-2 space-y-2">
+          ${cart.map(item => `
+            <div class="pt-2 first:pt-0">
+              <div class="flex justify-between font-bold text-slate-900">
+                <span>${item.qty}x${item.name}</span>
+                <span>${formatUSD(item.unitPrice * item.qty)}</span>
+              </div>
+              ${item.preferences?.length ? `<p class="text-[11px] text-slate-600">• Prep: ${item.preferences.join(", ")}</p>` : ''}
+              ${item.extras?.length ? `<p class="text-[11px] text-emerald-700 font-semibold">• Extras: ${item.extras.map(e => e.name).join(", ")}</p>` : ''}
+              ${item.notes ? `<p class="text-[11px] text-amber-700">• Nota: "${item.notes}"</p>` : ''}
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="space-y-1 text-xs">
+          <div class="flex justify-between"><span>Subtotal:</span><strong>${formatUSD(subtotalUSD)}</strong></div>
+          ${orderMode === "delivery" ? `<div class="flex justify-between"><span>Delivery:</span><strong>${formatUSD(currentDelivery)}</strong></div>` : ''}
+          <div class="flex justify-between text-sm font-black text-slate-900 pt-1 border-t border-slate-200">
+            <span>TOTAL A PAGAR:</span>
+            <span>${formatUSD(totalUSD)} (${formatVES(totalUSD)})</span>
+          </div>
+          <p class="pt-1"><strong>Método de Pago:</strong> ${paymentTitle}</p>
+          <p><strong>Referencia / Efectivo:</strong> <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">${paymentRef}</span></p>
+        </div>
+      `;
+
+      let wa = `🍔 *NUEVA COMANDA / FACTURA WEB - FATNESS* 🌭\n`;
+      wa += `🧾 *Orden:* ${invId} | 🕒 ${nowStr}\n`;
+      wa += `📍 *Modalidad:* ${modeLabels[orderMode]}\n\n`;
+      wa += `👤 *Cliente:* ${name}\n`;
+      wa += `📞 *Teléfono:* ${phone}\n`;
+      wa += `🏠 *Detalle Entrega/Mesa:* ${address}\n`;
+      wa += `━━━━━━━━━━━━━━━━━━━━\n`;
+      wa += `📋 *DETALLE PARA COCINA:*\n`;
+      cart.forEach(item => {
+        wa += `▪️ *${item.qty}x ${item.name}* (${formatUSD(item.unitPrice * item.qty)})\n`;
+        if (item.preferences?.length) {
+          wa += `   👉 _Cómo lo quiere:_ ${item.preferences.join(", ")}\n`;
+        }
+        if (item.extras?.length) {
+          wa += `   ➕ _Adicionales:_ ${item.extras.map(e => e.name).join(", ")}\n`;
+        }
+        if (item.notes) {
+          wa += `   📝 _Nota:_ ${item.notes}\n`;
+        }
+      });
+      wa += `━━━━━━━━━━━━━━━━━━━━\n`;
+      if (orderMode === "delivery") {
+        wa += `🛵 *Subtotal:* ${formatUSD(subtotalUSD)} + *Delivery:* ${formatUSD(currentDelivery)}\n`;
+      }
+      wa += `💰 *TOTAL FACTURA:* *${formatUSD(totalUSD)}* (${formatVES(totalUSD)})\n`;
+      wa += `💳 *Método de Pago:* ${paymentTitle}\n`;
+      wa += `✅ *Ref / Billete:* ${paymentRef}\n\n`;
+      wa += `_Pedido generado desde el Menú Digital de FATNESS bar and food._`;
+
+      preparedWhatsAppText = wa;
+
+      const invModal = document.getElementById("invoicePreviewModal");
+      invModal.classList.remove("hidden");
+      invModal.classList.add("flex");
+      lucide.createIcons();
+    }
+
+    function sendPreparedWhatsAppMessage() {
+      window.open(`https://wa.me/${RESTAURANT_PHONE}?text=${encodeURIComponent(preparedWhatsAppText)}`, "_blank");
+    }
+
+    function closeInvoiceModal() {
+      const invModal = document.getElementById("invoicePreviewModal");
+      invModal.classList.add("hidden");
+      invModal.classList.remove("flex");
+    }
+
+    // =========================================================
+    // PANEL DEL DUEÑO (INVISIBLE - CÓDIGO 1234)
+    // =========================================================
+    function openAdminModal() {
+      document.getElementById("adminRateVES").value = rateVES;
+      document.getElementById("adminDeliveryFee").value = deliveryFee;
+
+      switchAdminTab("orders");
+      renderAdminOrders();
+      renderAdminMenuList();
+      renderAdminReservations();
+
+      const modal = document.getElementById("adminModal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      lucide.createIcons();
+    }
+
+    function closeAdminModal() {
+      const modal = document.getElementById("adminModal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function switchAdminTab(tabName) {
+      const tabs = ["orders", "menu", "reservations"];
+      tabs.forEach(t => {
+        const panel = document.getElementById(`adminTab-${t}`);
+        const btn = document.getElementById(`adminTabBtn-${t}`);
+        const isActive = t === tabName;
+        if (panel) panel.classList.toggle("hidden", !isActive);
+        if (btn) {
+          btn.className = isActive
+            ? "px-4 py-2 rounded-xl text-xs font-extrabold transition flex items-center gap-2 whitespace-nowrap bg-mustard text-chalk shadow-lg shadow-mustard/20"
+            : "px-4 py-2 rounded-xl text-xs font-extrabold transition flex items-center gap-2 whitespace-nowrap bg-slateCard text-slate-300 hover:text-white border border-white/10";
+        }
+      });
+      lucide.createIcons();
+    }
+
+    // --- PESTAÑA 1: CONTROL DE PEDIDOS, INGRESOS DEL DÍA Y BUSCADOR POR CLIENTE ---
+    function toggleManualOrderBox() {
+      const box = document.getElementById("manualOrderBox");
+      box.classList.toggle("hidden");
+    }
+
+    function parseWhatsAppOrderText() {
+      const raw = (document.getElementById("waPasteInput").value || "").trim();
+      if (!raw) {
+        alert("Pega primero el texto del pedido de WhatsApp.");
+        return;
+      }
+
+      const idMatch = raw.match(/#FAT-\d+/i);
+      const clientMatch = raw.match(/Cliente:\*?\s*([^\n]+)/i);
+      const phoneMatch = raw.match(/Tel[eé]fono:\*?\s*([^\n]+)/i);
+      const modeMatch = raw.match(/Modalidad:\*?\s*([^\n]+)/i);
+      const addressMatch = raw.match(/Detalle Entrega\/Mesa:\*?\s*([^\n]+)/i);
+      const totalMatch = raw.match(/TOTAL FACTURA:\*?\s*\*?\$(\d+(?:\.\d+)?)/i);
+      const payMatch = raw.match(/M[eé]todo de Pago:\*?\s*([^\n]+)/i);
+      const refMatch = raw.match(/Ref \/ Billete:\*?\s*([^\n]+)/i);
+
+      // Extraer líneas de platos
+      const itemLines = raw.split("\n")
+        .filter(line => line.trim().startsWith("▪️") || line.trim().startsWith("👉") || line.trim().startsWith("➕"))
+        .map(line => line.replace(/[*_]/g, "").trim())
+        .join(" ");
+
+      const newOrder = {
+        id: idMatch ? idMatch[0] : `#FAT-${Math.floor(1000 + Math.random() * 9000)}`,
+        dateISO: getTodayISO(),
+        timeStr: new Date().toLocaleString("es-VE", { dateStyle: "short", timeStyle: "short" }),
+        clientName: clientMatch ? clientMatch[1].replace(/\*/g, "").trim() : "Cliente WhatsApp",
+        clientPhone: phoneMatch ? phoneMatch[1].replace(/\*/g, "").trim() : "",
+        address: addressMatch ? addressMatch[1].replace(/\*/g, "").trim() : "",
+        mode: modeMatch ? modeMatch[1].replace(/\*/g, "").trim() : "🛵 Delivery",
+        itemsSummary: itemLines || raw.substring(0, 140),
+        totalUSD: totalMatch ? parseFloat(totalMatch[1]) : 0,
+        paymentMethod: payMatch ? payMatch[1].replace(/\*/g, "").trim() : "Por confirmar",
+        paymentRef: refMatch ? refMatch[1].replace(/\*/g, "").trim() : "",
+        status: "Pendiente"
+      };
+
+      ordersHistory.unshift(newOrder);
+      localStorage.setItem("fatness_orders_history", JSON.stringify(ordersHistory));
+      document.getElementById("waPasteInput").value = "";
+      renderAdminOrders();
+      showToast(`¡Pedido de ${newOrder.clientName} registrado en el control del día!`);
+    }
+
+    function saveManualOrder() {
+      const name = document.getElementById("manOrderName").value.trim();
+      const phone = document.getElementById("manOrderPhone").value.trim();
+      const items = document.getElementById("manOrderItems").value.trim();
+      const total = parseFloat(document.getElementById("manOrderTotal").value);
+      const mode = document.getElementById("manOrderMode").value;
+      const pay = document.getElementById("manOrderPay").value.trim() || "Directo";
+
+      if (!name || !items || isNaN(total)) {
+        alert("Completa al menos el Nombre del Cliente, los Platos y el Total en $.");
+        return;
+      }
+
+      const newOrder = {
+        id: `#FAT-${Math.floor(1000 + Math.random() * 9000)}`,
+        dateISO: getTodayISO(),
+        timeStr: new Date().toLocaleString("es-VE", { dateStyle: "short", timeStyle: "short" }),
+        clientName: name,
+        clientPhone: phone,
+        address: mode,
+        mode: mode,
+        itemsSummary: items,
+        totalUSD: total,
+        paymentMethod: pay,
+        paymentRef: pay,
+        status: "Pendiente"
+      };
+
+      ordersHistory.unshift(newOrder);
+      localStorage.setItem("fatness_orders_history", JSON.stringify(ordersHistory));
+
+      document.getElementById("manOrderName").value = "";
+      document.getElementById("manOrderPhone").value = "";
+      document.getElementById("manOrderItems").value = "";
+      document.getElementById("manOrderTotal").value = "";
+      document.getElementById("manOrderPay").value = "";
+
+      renderAdminOrders();
+      showToast(`¡Pedido de ${name} guardado!`);
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const found = ordersHistory.find(o => o.id === orderId);
+      if (found) {
+        found.status = newStatus;
+        localStorage.setItem("fatness_orders_history", JSON.stringify(ordersHistory));
+        renderAdminOrders();
+      }
+    }
+
+    function deleteOrderRecord(orderId) {
+      ordersHistory = ordersHistory.filter(o => o.id !== orderId);
+      localStorage.setItem("fatness_orders_history", JSON.stringify(ordersHistory));
+      renderAdminOrders();
+      showToast("Pedido eliminado del registro");
+    }
+
+    function clearCompletedOrAllOrders() {
+      if (!confirm("¿Seguro que deseas borrar el historial de pedidos guardados?")) return;
+      ordersHistory = [];
+      localStorage.setItem("fatness_orders_history", JSON.stringify(ordersHistory));
+      renderAdminOrders();
+      showToast("Historial de pedidos reiniciado");
+    }
+
+    function renderAdminOrders() {
+      const todayISO = getTodayISO();
+      const todayOrders = ordersHistory.filter(o => o.dateISO === todayISO && o.status !== "Anulado");
+      const todayRevenueUSD = todayOrders.reduce((acc, o) => acc + Number(o.totalUSD || 0), 0);
+      const pendingCount = todayOrders.filter(o => o.status !== "Entregado").length;
+      const completedCount = todayOrders.filter(o => o.status === "Entregado").length;
+
+      document.getElementById("kpiTodayUSD").textContent = formatUSD(todayRevenueUSD);
+      document.getElementById("kpiTodayVES").textContent = formatVES(todayRevenueUSD);
+      document.getElementById("kpiTodayCount").textContent = String(todayOrders.length);
+      document.getElementById("kpiTotalAllTime").textContent = `Total en historial: ${ordersHistory.length}`;
+      document.getElementById("kpiPendingCount").textContent = `${pendingCount} Pendientes / En Cocina`;
+      document.getElementById("kpiCompletedCount").textContent = `${completedCount} Entregados hoy`;
+
+      const query = (document.getElementById("adminOrderSearch")?.value || "").toLowerCase().trim();
+      const dateFilter = document.getElementById("adminOrderDateFilter")?.value || "today";
+
+      const filtered = ordersHistory.filter(o => {
+        if (dateFilter === "today" && o.dateISO !== todayISO) return false;
+        if (!query) return true;
+        return (
+          (o.clientName || "").toLowerCase().includes(query) ||
+          (o.clientPhone || "").toLowerCase().includes(query) ||
+          (o.id || "").toLowerCase().includes(query) ||
+          (o.itemsSummary || "").toLowerCase().includes(query)
+        );
+      });
+
+      const container = document.getElementById("adminOrdersContainer");
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 rounded-2xl bg-chalk border border-white/10 text-center text-slate-400">
+            <p class="font-bold text-white text-sm">No se encontraron pedidos con ese filtro o nombre.</p>
+            <p class="text-xs mt-1">Cuando se generen pedidos o los anotes arriba, aparecerán aquí con el buscador instantáneo por nombre del cliente.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(o => {
+        const badgeColor =
+          o.status === "Entregado"
+            ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
+            : o.status === "En Cocina"
+            ? "bg-amber-500/20 text-amber-300 border-amber-500/30"
+            : "bg-mustard/20 text-mustard border-mustard/30";
+
+        return `
+          <div class="p-4 rounded-2xl bg-chalk border border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:border-mustard/40 transition">
+            <div class="space-y-1 flex-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="font-black text-mustard text-sm">${o.id}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${badgeColor}">${o.status}</span>
+                <span class="text-slate-400 text-[11px]">• ${o.timeStr} • ${o.mode}</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-3 pt-0.5">
+                <span class="text-sm font-extrabold text-white">👤 ${o.clientName}</span>
+                ${o.clientPhone ? `<a href="https://wa.me/${o.clientPhone.replace(/\D/g, '')}" target="_blank" class="text-xs text-emerald-400 hover:underline font-bold">📞 ${o.clientPhone}</a>` : ''}
+                ${o.address ? `<span class="text-xs text-slate-400">📍 ${o.address}</span>` : ''}
+              </div>
+              <p class="text-xs text-slate-200 bg-slateCard p-2.5 rounded-xl border border-white/5 mt-1.5">
+                🍔 <strong>Pedido:</strong> ${o.itemsSummary}
+              </p>
+              <p class="text-[11px] text-slate-400 pt-1">
+                💳 <strong>Pago:</strong> ${o.paymentMethod} ${o.paymentRef ? `(${o.paymentRef})` : ''}
+              </p>
+            </div>
+
+            <div class="flex flex-row lg:flex-col items-center lg:items-end justify-between gap-2 shrink-0 border-t lg:border-t-0 pt-2 lg:pt-0 border-white/10">
+              <div class="text-left lg:text-right">
+                <span class="text-lg font-black text-mustard block">${formatUSD(o.totalUSD)}</span>
+                <span class="text-[11px] text-emerald-400 font-bold">${formatVES(o.totalUSD)}</span>
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                <select onchange="updateOrderStatus('${o.id}', this.value)" class="px-2.5 py-1.5 rounded-lg bg-slateCard border border-white/15 text-[11px] font-bold text-white">
+                  <option value="Pendiente" ${o.status === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                  <option value="En Cocina" ${o.status === 'En Cocina' ? 'selected' : ''}>🔥 En Cocina</option>
+                  <option value="Entregado" ${o.status === 'Entregado' ? 'selected' : ''}>✅ Entregado</option>
+                  <option value="Anulado" ${o.status === 'Anulado' ? 'selected' : ''}>🚫 Anulado</option>
+                </select>
+                <button onclick="deleteOrderRecord('${o.id}')" class="p-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/30 text-rose-400" title="Eliminar pedido">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+      lucide.createIcons();
+    }
+
+    // --- PESTAÑA 2: GESTIÓN DE MENÚ (EDITAR PRECIOS, AGREGAR Y QUITAR PRODUCTOS) ---
+    function renderAdminMenuList() {
+      const list = document.getElementById("adminPricesList");
+      if (!list) return;
+
+      list.innerHTML = menuData.map(item => `
+        <div class="p-3.5 rounded-2xl bg-chalk border ${item.available !== false ? 'border-white/10' : 'border-rose-500/40 opacity-75'} flex items-center justify-between gap-3">
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold text-white truncate" title="${item.name}">${item.name}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-slate-400 uppercase">${item.category}</span>
+            </div>
+            <p class="text-[11px] text-slate-400 truncate mt-0.5">${item.description}</p>
+          </div>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <!-- Botón Disponible / Agotado -->
+            <button type="button" onclick="toggleProductAvailability('${item.id}')"
+                    class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold border transition ${
+                      item.available !== false
+                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                        : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                    }">
+              ${item.available !== false ? '✓ Activo' : '✕ Agotado'}
+            </button>
+
+            <!-- Precio USD -->
+            <div class="flex items-center gap-1">
+              <span class="text-slate-400">$</span>
+              <input type="number" step="0.25" data-item-id="${item.id}" value="${Number(item.price).toFixed(2)}"
+                     class="admin-price-input w-20 px-2 py-1 rounded-lg bg-slateCard border border-white/15 text-right font-extrabold text-mustard" />
+            </div>
+
+            <!-- Quitar / Eliminar Producto -->
+            <button type="button" onclick="deleteMenuProduct('${item.id}')"
+                    class="p-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 transition" title="Quitar producto del menú">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      `).join("");
+      lucide.createIcons();
+    }
+
+    function addNewMenuProduct() {
+      const name = document.getElementById("newProdName").value.trim();
+      const category = document.getElementById("newProdCategory").value;
+      const price = parseFloat(document.getElementById("newProdPrice").value);
+      const badge = document.getElementById("newProdBadge").value.trim() || "Especial";
+      const desc = document.getElementById("newProdDesc").value.trim() || "Preparado al momento en FATNESS bar and food.";
+      const img = document.getElementById("newProdImg").value.trim() || DEFAULT_CATEGORY_IMAGES[category];
+      const customizable = document.getElementById("newProdCustom").checked;
+
+      if (!name || isNaN(price) || price < 0) {
+        alert("Por favor escribe el Nombre del producto y su Precio válido en dólares.");
+        return;
+      }
+
+      const newProduct = {
+        id: `prod-${Date.now()}`,
+        category,
+        name,
+        price,
+        badge,
+        customizable,
+        available: true,
+        type: category === "hamburguesas" ? "burger" : "hotdog",
+        image: img,
+        description: desc
+      };
+
+      menuData.unshift(newProduct);
+      localStorage.setItem("fatness_menu", JSON.stringify(menuData));
+
+      document.getElementById("newProdName").value = "";
+      document.getElementById("newProdPrice").value = "";
+      document.getElementById("newProdBadge").value = "";
+      document.getElementById("newProdDesc").value = "";
+      document.getElementById("newProdImg").value = "";
+
+      renderAdminMenuList();
+      renderMenu();
+      showToast(`¡Producto "${name}" agregado al menú!`);
+    }
+
+    function toggleProductAvailability(itemId) {
+      const found = menuData.find(m => m.id === itemId);
+      if (!found) return;
+      found.available = found.available === false ? true : false;
+      localStorage.setItem("fatness_menu", JSON.stringify(menuData));
+      renderAdminMenuList();
+      renderMenu();
+      showToast(found.available ? `✓ "${found.name}" activado en el menú` : `✕ "${found.name}" ocultado (Agotado)`);
+    }
+
+    function deleteMenuProduct(itemId) {
+      const found = menuData.find(m => m.id === itemId);
+      if (!found) return;
+      if (!confirm(`¿Seguro que deseas quitar "${found.name}" del menú?`)) return;
+
+      menuData = menuData.filter(m => m.id !== itemId);
+      localStorage.setItem("fatness_menu", JSON.stringify(menuData));
+      renderAdminMenuList();
+      renderMenu();
+      showToast(`Producto eliminado del menú`);
+    }
+
+    function saveAdminChanges() {
+      const newRate = parseFloat(document.getElementById("adminRateVES").value);
+      const newDeliv = parseFloat(document.getElementById("adminDeliveryFee").value);
+      if (!isNaN(newRate) && newRate > 0) {
+        rateVES = newRate;
+        localStorage.setItem("fatness_rate_ves", String(rateVES));
+      }
+      if (!isNaN(newDeliv) && newDeliv >= 0) {
+        deliveryFee = newDeliv;
+        localStorage.setItem("fatness_delivery_fee", String(deliveryFee));
+      }
+
+      document.querySelectorAll(".admin-price-input").forEach(inp => {
+        const id = inp.getAttribute("data-item-id");
+        const val = parseFloat(inp.value);
+        const found = menuData.find(m => m.id === id);
+        if (found && !isNaN(val) && val >= 0) {
+          found.price = val;
+        }
+      });
+
+      localStorage.setItem("fatness_menu", JSON.stringify(menuData));
+      renderMenu();
+      updateCartUI();
+      renderAdminOrders();
+      showToast("¡Precios y tasa actualizados en vivo!");
+    }
+
+    function resetDefaultMenuData() {
+      if (!confirm("¿Restaurar todos los platos y precios originales de fábrica?")) return;
+      localStorage.removeItem("fatness_menu");
+      menuData = JSON.parse(JSON.stringify(DEFAULT_MENU));
+      renderAdminMenuList();
+      renderMenu();
+      showToast("Menú original restaurado");
+    }
+
+    // --- PESTAÑA 3: CONTROL DE RESERVAS Y BLOQUEO DE HORAS ---
+    function toggleHourAvailabilityAdmin(hour) {
+      if (blockedHours.includes(hour)) {
+        blockedHours = blockedHours.filter(h => h !== hour);
+      } else {
+        blockedHours.push(hour);
+      }
+      localStorage.setItem("fatness_blocked_hours", JSON.stringify(blockedHours));
+      renderReservationTimeSlots();
+      renderAdminReservations();
+    }
+
+    function toggleManualResBox() {
+      document.getElementById("manualResBox").classList.toggle("hidden");
+    }
+
+    function saveManualReservation() {
+      const name = document.getElementById("manResName").value.trim();
+      const phone = document.getElementById("manResPhone").value.trim();
+      const time = document.getElementById("manResTime").value;
+      const guests = document.getElementById("manResGuests").value.trim() || "2 personas";
+
+      if (!name || !phone) {
+        alert("Ingresa el Nombre y Teléfono del cliente.");
+        return;
+      }
+
+      reservationsList.unshift({
+        id: `#RES-${Math.floor(100 + Math.random() * 900)}`,
+        date: getTodayISO(),
+        time,
+        guests,
+        clientName: name,
+        clientPhone: phone,
+        notes: "Anotada por el encargado",
+        status: "Confirmada",
+        createdAt: new Date().toLocaleString("es-VE", { dateStyle: "short", timeStyle: "short" })
+      });
+
+      localStorage.setItem("fatness_reservations", JSON.stringify(reservationsList));
+      document.getElementById("manResName").value = "";
+      document.getElementById("manResPhone").value = "";
+      document.getElementById("manResGuests").value = "";
+      renderAdminReservations();
+      showToast("Reserva registrada");
+    }
+
+    function deleteReservationRecord(resId) {
+      reservationsList = reservationsList.filter(r => r.id !== resId);
+      localStorage.setItem("fatness_reservations", JSON.stringify(reservationsList));
+      renderAdminReservations();
+      showToast("Reserva eliminada");
+    }
+
+    function renderAdminReservations() {
+      const slotsGrid = document.getElementById("adminSlotsToggleGrid");
+      if (slotsGrid) {
+        slotsGrid.innerHTML = RESERVATION_HOURS.map(hour => {
+          const isBlocked = blockedHours.includes(hour);
+          return `
+            <button type="button" onclick="toggleHourAvailabilityAdmin('${hour}')"
+                    class="p-2.5 rounded-xl border text-xs font-extrabold transition flex flex-col items-center ${
+                      isBlocked
+                        ? 'border-rose-500/40 bg-rose-500/20 text-rose-300'
+                        : 'border-emerald-500/30 bg-emerald-500/15 text-emerald-300'
+                    }">
+              <span>${hour}</span>
+              <span class="text-[9px] uppercase">${isBlocked ? '🚫 Bloqueada' : '✅ Disponible'}</span>
+            </button>
+          `;
+        }).join("");
+      }
+
+      const q = (document.getElementById("adminResSearch")?.value || "").toLowerCase().trim();
+      const filtered = reservationsList.filter(r =>
+        !q ||
+        (r.clientName || "").toLowerCase().includes(q) ||
+        (r.clientPhone || "").toLowerCase().includes(q) ||
+        (r.time || "").toLowerCase().includes(q)
+      );
+
+      const listEl = document.getElementById("adminReservationsList");
+      if (!listEl) return;
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `
+          <div class="p-8 rounded-2xl bg-chalk border border-white/10 text-center text-slate-400">
+            <p class="font-bold text-white text-sm">No hay reservas registradas todavía.</p>
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(r => {
+        const cleanPhone = (r.clientPhone || "").replace(/\D/g, "");
+        const waFollowUpMsg = encodeURIComponent(
+          `Hola ${r.clientName} 👋, te escribimos de *FATNESS bar and food*. Tenemos registrada tu reserva para hoy a las *${r.time}* (${r.guests}). Queríamos confirmar si ya vienen en camino para mantener tu mesa lista. 🍔🍹`
+        );
+
+        return `
+          <div class="p-4 rounded-2xl bg-chalk border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="font-black text-mustard">${r.id}</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-mustard/20 text-mustard font-extrabold text-[11px]">⏰ ${r.time}</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-white/10 text-white font-bold text-[11px]">👥 ${r.guests}</span>
+                <span class="text-slate-400 text-[11px]">• Fecha: ${r.date}</span>
+              </div>
+              <p class="text-sm font-extrabold text-white pt-0.5">👤 ${r.clientName} — 📞 <span class="text-emerald-400">${r.clientPhone}</span></p>
+              ${r.notes ? `<p class="text-xs text-slate-300 italic">📝 "${r.notes}"</p>` : ''}
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+              ${cleanPhone ? `
+                <a href="https://wa.me/${cleanPhone.startsWith('58') ? cleanPhone : '58' + cleanPhone.replace(/^0/, '')}?text=${waFollowUpMsg}"
+                   target="_blank"
+                   class="px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-chalk font-extrabold text-xs flex items-center gap-1.5">
+                  <i data-lucide="phone-outgoing" class="w-3.5 h-3.5"></i>
+                  <span>Confirmar si vienen</span>
+                </a>
+              ` : ''}
+              <button onclick="deleteReservationRecord('${r.id}')" class="p-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/30 text-rose-400">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>
